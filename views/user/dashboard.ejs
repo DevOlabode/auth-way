@@ -1,0 +1,54 @@
+<% layout('layout/boilerplate.ejs') %>
+
+<section class="dashboard">
+  <header class="dashboard-header">
+    <h1>Developer Dashboard</h1>
+    <p class="dashboard-subtext">
+      Welcome, <strong><%= user.name %></strong>
+    </p>
+  </header>
+
+  <div class="dashboard-grid">
+    <!-- API Key Card -->
+    <div class="card">
+      <h2>Your API Key</h2>
+
+      <% if (user.apiKeyActive) { %>
+        <div class="api-key-box">
+          <code id="apiKey"><%= user.apiKey %></code>
+        </div>
+        <p class="hint">Keep this key secret. Do not expose it in frontend code.</p>
+      <% } else { %>
+        <p class="warning">Your API key is currently disabled.</p>
+      <% } %>
+    </div>
+
+    <!-- Account Info -->
+    <div class="card">
+      <h2>Account</h2>
+      <ul class="info-list">
+        <li><strong>Email:</strong> <%= user.email %></li>
+        <li><strong>Plan:</strong> <%= user.plan %></li>
+        <li><strong>Joined:</strong> <%= user.createdAt.toDateString() %></li>
+        <% if (user.lastLoginAt) { %>
+          <li><strong>Last login:</strong> <%= user.lastLoginAt.toDateString() %></li>
+        <% } %>
+      </ul>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <h2>Quick Actions</h2>
+      <ul class="action-list">
+        <li>Rotate API Key (coming soon)</li>
+        <li>Manage Allowed Origins</li>
+        <li>View API Documentation</li>
+        <li>Account Settings</li>
+      </ul>
+    </div>
+  </div>
+
+  <form action="/logout" method="POST" class="logout-form">
+    <button type="submit" class="btn-danger">Logout</button>
+  </form>
+</section>

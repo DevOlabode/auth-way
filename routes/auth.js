@@ -19,4 +19,6 @@ router.get('/register',controller.registerForm);
 
 router.post('/register', catchAsync(controller.register));
 
+router.get('/dashboard', catchAsync(controller.dashboard));
+
 module.exports = router;
