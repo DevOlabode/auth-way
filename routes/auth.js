@@ -3,9 +3,6 @@ const router = express.Router();
 
 const controller = require('../controllers/auth');
 
-router.get('/login', (req, res)=>{
-    res.send('The Login Form')
-})
-
+const catchAsync = require('../utils/catchAsync')
 
 module.exports = router;
