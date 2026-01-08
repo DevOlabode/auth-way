@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const passportLocalMongoose = require('passport-local-mongoose');
+const plm = require('passport-local-mongoose');
+const passportLocalMongoose = plm.default || plm;
 const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema(
@@ -55,4 +56,11 @@ userSchema.plugin(passportLocalMongoose, {
       UserExistsError: 'A developer with this email already exists',
     },
   });
+
+userSchema.methods.generateApiKey = function () {
+    const key = crypto.randomBytes(32).toString('hex');
+    this.apiKey = key;
+    return key;
+};
   
+module.exports = mongoose.model('User', userSchema);
