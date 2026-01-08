@@ -37,7 +37,9 @@ app.use((req, res, next) => {
     next();
   });
 
-app.use('/', require('./routes/auth'));
+const {isLoggedIn} = require('./middleware')  
+
+app.use('/', isLoggedIn);
 
 app.get('/', (req, res)=>{
     req.flash('success', 'The Homepage')
