@@ -9,6 +9,8 @@ const path = require('path')
 const session = require('express-session');
 const flash = require('connect-flash');
 
+const passport = require('./config/passport');
+
 const sessionConfig = require('./config/session');
 
 app.use(express.json());
@@ -17,6 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 require('./config/database')();
 app.use(session(sessionConfig));
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
