@@ -38,6 +38,7 @@ app.use((req, res, next) => {
   });
 
 app.use('/', require('./routes/auth'));  
+app.use('/', require('./routes/user'));  
 
 
 app.get('/', (req, res) => {
