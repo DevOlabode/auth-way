@@ -4,7 +4,9 @@ const router = express.Router();
 const controller = require('../controllers/user');
 const catchAsync = require('../utils/catchAsync');
 
-const { isLoggedIn } = require('../middleware')
+const { isLoggedIn } = require('../middleware');
+
+router.use(isLoggedIn);
 
 router.get('/dashboard', catchAsync(controller.dashboard));
 
