@@ -10,4 +10,13 @@ router.use(isLoggedIn);
 
 router.get('/dashboard', catchAsync(controller.dashboard));
 
+router.get('/forgot-password', controller.forgotPassword);
+
+router.post('/forgot-password', catchAsync(controller.forgotPassword));
+
+router.get('/reset-password/:token', catchAsync(controller.resetPasswordForm));
+
+router.post('/reset-password/:token', catchAsync(controller.resetPassword));
+  
+
 module.exports = router;

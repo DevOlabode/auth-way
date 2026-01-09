@@ -42,6 +42,9 @@ const userSchema = new mongoose.Schema(
       default: 'free',
     },
 
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+
     lastLoginAt: Date,
   },
   {
