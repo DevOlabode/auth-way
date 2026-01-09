@@ -19,6 +19,6 @@ router.get('/register',controller.registerForm);
 
 router.post('/register', catchAsync(controller.register));
 
-router.post('/logout', controller.logout)
+router.post('/logout', controller.logout);
 
 module.exports = router;

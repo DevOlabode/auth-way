@@ -6,13 +6,13 @@ const catchAsync = require('../utils/catchAsync');
 
 const { isLoggedIn } = require('../middleware');
 
-router.use(isLoggedIn);
+// router.use(isLoggedIn);
 
-router.get('/dashboard', catchAsync(controller.dashboard));
+router.get('/dashboard',isLoggedIn, catchAsync(controller.dashboard));
 
 router.get('/forgot-password', controller.forgotPassword);
 
-router.post('/forgot-password', catchAsync(controller.forgotPassword));
+router.post('/forgot-password',catchAsync(controller.forgotPassword));
 
 router.get('/reset-password/:token', catchAsync(controller.resetPasswordForm));
 
