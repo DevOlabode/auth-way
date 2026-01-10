@@ -15,7 +15,8 @@ module.exports.login = async (req, res) => {
     await req.user.save();
 
     req.flash('success', 'Welcome back');
-    res.redirect('/dashboard');
+    const returnUrl = res.locals.returnTo || '/';
+    res.redirect(returnUrl);
 };
 
 module.exports.registerForm = (req, res)=>{
