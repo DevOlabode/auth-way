@@ -1,0 +1,103 @@
+<% layout('layout/boilerplate.ejs') %>
+
+<section class="app-edit">
+  <header class="page-header">
+    <h1>Edit App</h1>
+    <p class="page-subtext">
+      Update your app settings and configuration.
+    </p>
+  </header>
+
+  <!-- Edit App Form -->
+  <form
+    action="/apps/<%= app._id %>?_method=PUT"
+    method="POST"
+    class="form-card"
+  >
+    <div class="form-group">
+      <label for="name">App Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        value="<%= app.name %>"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        name="description"
+        rows="3"
+        placeholder="What does this app do?"
+      ><%= app.description %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="callbackUrl">Callback URL</label>
+      <input
+        type="url"
+        id="callbackUrl"
+        name="callbackUrl"
+        value="<%= app.callbackUrl %>"
+        placeholder="https://yourapp.com/callback"
+        required
+      />
+      <small class="hint">
+        This URL is used after authentication.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Status</label>
+      <div class="radio-group">
+        <label>
+          <input
+            type="radio"
+            name="isActive"
+            value="true"
+            <%= app.isActive ? 'checked' : '' %>
+          />
+          Active
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="isActive"
+            value="false"
+            <%= !app.isActive ? 'checked' : '' %>
+          />
+          Disabled
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary">
+      Save Changes
+    </button>
+  </form>
+
+  <!-- Danger Zone -->
+  <div class="danger-zone">
+    <h3>Danger Zone</h3>
+    <p class="danger-text">
+      Deleting this app will permanently remove it and all related users.
+    </p>
+
+    <form
+      action="/apps/<%= app._id %>?_method=DELETE"
+      method="POST"
+    >
+      <button type="submit" class="btn-danger">
+        Delete App
+      </button>
+    </form>
+  </div>
+
+  <a href="/dashboard" class="back-link">
+    ← Back to Dashboard
+  </a>
+</section>

@@ -35,7 +35,6 @@ module.exports.deleteApp = async (req, res) => {
     return res.redirect('/dashboard');
   }
 
-  // Ownership check
   if (!app.owner.equals(req.user._id)) {
     req.flash('error', 'You are not authorized to delete this app');
     return res.redirect('/dashboard');
@@ -45,4 +44,9 @@ module.exports.deleteApp = async (req, res) => {
 
   req.flash('success', 'App deleted successfully');
   res.redirect('/dashboard');
+};
+
+module.exports.editForm = async(req, res)=>{
+    const app = await App.findById(req.params.id);
+    res.render('app/edit', {app, title : `Edit ${app.name}`})
 };
