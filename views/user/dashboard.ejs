@@ -3,59 +3,45 @@
 <section class="dashboard">
 
   <header class="dashboard-header">
-    <h1>Developer Dashboard</h1>
+    <h1>Dashboard</h1>
     <p class="dashboard-subtext">
-      Welcome, <strong><%= user.name %></strong>
+      Welcome back, <strong><%= user.name %></strong>
     </p>
   </header>
 
-  <!-- =====================
-       Apps Section
-       ===================== -->
+  <!-- Apps -->
   <section class="dashboard-section">
     <div class="section-header">
       <h2>Your Apps</h2>
-      <a href="/apps/new" class="btn-primary btn-sm">
-        + New App
-      </a>
+      <a href="/app/new" class="btn-primary btn-sm">New App</a>
     </div>
 
     <% if (apps.length === 0) { %>
-      <!-- Empty State -->
       <div class="empty-state">
-        <h3>No apps yet</h3>
-        <p>
-          Create your first app to start authenticating users with AuthWay.
-        </p>
-        <a href="/apps/new" class="btn-primary">
-          Create Your First App
-        </a>
+        <p>You haven’t created any apps yet.</p>
+        <a href="/app/new" class="btn-primary">Create App</a>
       </div>
     <% } else { %>
       <div class="apps-grid">
         <% apps.forEach(app => { %>
-          <div class="card app-card">
+          <div class="app-card">
             <h3><%= app.name %></h3>
 
             <% if (app.description) { %>
-              <p class="text-muted"><%= app.description %></p>
+              <p class="muted"><%= app.description %></p>
             <% } %>
 
-            <ul class="info-list">
-              <li>
-                <strong>Status:</strong>
-                <span class="<%= app.isActive ? 'status-active' : 'status-disabled' %>">
-                  <%= app.isActive ? 'Active' : 'Disabled' %>
-                </span>
-              </li>
-              <li>
-                <strong>Created:</strong>
+            <div class="app-meta">
+              <span class="status <%= app.isActive ? 'active' : 'disabled' %>">
+                <%= app.isActive ? 'Active' : 'Disabled' %>
+              </span>
+              <span class="date">
                 <%= app.createdAt.toDateString() %>
-              </li>
-            </ul>
+              </span>
+            </div>
 
-            <a href="/apps/<%= app._id %>" class="btn-secondary btn-sm">
-              Manage App →
+            <a href="/app/<%= app._id %>" class="link">
+              Manage →
             </a>
           </div>
         <% }) %>
@@ -63,40 +49,19 @@
     <% } %>
   </section>
 
-  <!-- =====================
-       Account Info
-       ===================== -->
-  <div class="dashboard-grid">
+  <!-- Account -->
+  <section class="dashboard-section">
+    <h2>Account</h2>
 
-    <div class="card">
-      <h2>Account</h2>
-      <ul class="info-list">
-        <li><strong>Email:</strong> <%= user.email %></li>
-        <li><strong>Plan:</strong> <%= user.plan %></li>
-        <li><strong>Joined:</strong> <%= user.createdAt.toDateString() %></li>
-
-        <% if (user.lastLoginAt) { %>
-          <li><strong>Last Login:</strong> <%= user.lastLoginAt.toDateString() %></li>
-        <% } %>
-      </ul>
+    <div class="account-card">
+      <div><strong>Email:</strong> <%= user.email %></div>
+      <div><strong>Plan:</strong> <%= user.plan %></div>
+      <div><strong>Joined:</strong> <%= user.createdAt.toDateString() %></div>
     </div>
-
-    <div class="card">
-      <h2>Quick Actions</h2>
-      <ul class="action-list">
-        <li>Rotate API Key (coming soon)</li>
-        <li>Manage Allowed Origins</li>
-        <li>View API Documentation</li>
-        <li>Account Settings</li>
-      </ul>
-    </div>
-
-  </div>
+  </section>
 
   <form action="/logout" method="POST" class="logout-form">
-    <button type="submit" class="btn-danger">
-      Logout
-    </button>
+    <button class="btn-danger">Logout</button>
   </form>
 
 </section>
