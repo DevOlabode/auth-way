@@ -8,11 +8,19 @@ const AppSchema = new Schema({
     },
     owner: {
         type : mongoose.Schema.Types.ObjectId,
-        ref : 'App'
+        ref : 'Developer'
     },
     isActive: { 
         type: Boolean, 
         default: true 
+    },
+    description : {
+        type : String,
+        required : false
+    },
+    callbackUrl : {
+        type : String,
+        required : false
     }
 });
 

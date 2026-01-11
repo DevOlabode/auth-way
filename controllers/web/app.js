@@ -4,6 +4,17 @@ module.exports.newForm = (req, res)=>{
     res.render('app/new', {title : 'New App'});
 };
 
-module.exports.newApp = (req, res)=>{
-    console.log(req.body)
+module.exports.newApp = async(req, res)=>{
+    const { name, description, callbackUrl} = req.body;
+    const app = new App({
+        name,
+        description,
+        callbackUrl,
+        owner : req.user._id,
+        isActive : true
+    });
+
+    await app.save();
+
+    res.redirect('/dashboard');
 };
