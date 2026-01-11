@@ -1,4 +1,4 @@
-const { transporter } = require('../config/email');
+const { transporter } = require('../config/mailer');
 
 module.exports.welcomeEmail = async(to, name, verifyUrl) =>{
     return transporter.sendMail({

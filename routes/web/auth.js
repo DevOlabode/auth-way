@@ -3,11 +3,11 @@ const router = express.Router();
 
 const passport = require('passport');
 
-const controller = require('../controllers/auth');
+const controller = require('../../controllers/auth');
 
-const catchAsync = require('../utils/catchAsync');
+const catchAsync = require('../../utils/catchAsync');
 
-const {redirectIfLoggedIn, storeReturnTo} = require('../middleware');
+const {redirectIfLoggedIn, storeReturnTo} = require('../../middleware');
 
 router.get('/login', redirectIfLoggedIn, controller.loginForm);
 

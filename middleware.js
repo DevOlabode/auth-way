@@ -26,3 +26,37 @@ module.exports.storeReturnTo = (req, res, next)=>{
   }
   next();
 };
+
+
+module.exports.requireAPIKey = async (req, res, next) => {
+  const apiKey = req.header('X-Authway-App-Key');
+
+  if (!apiKey) {
+    return res.status(401).json({ error: 'API key required' });
+  }
+
+  const key = await ApiKey.findOne({ key }).populate('app');
+
+  if (!key || !key.app.isActive) {
+    return res.status(403).json({ error: 'Invalid API key' });
+  }
+
+  req.appClient = key.app;
+  next();
+};
+
+
+// HOW FUTURE APPS WILL USE AUTHWAY.
+/*
+fetch('https://authway.com/api/auth/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Authway-App-Key': 'sk_live_xxx'
+  },
+  body: JSON.stringify({
+    email,
+    password
+  })
+});
+*/
