@@ -12,7 +12,7 @@ const webAppRoutes = require('./web/app')
 
 router.use('/', webAuthRoutes);
 router.use('/', webUserRoutes);
-router.use('/', webAppRoutes);
+router.use('/app', webAppRoutes);
 
 //    Mount API Routes
 
