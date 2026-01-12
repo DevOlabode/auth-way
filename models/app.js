@@ -21,7 +21,9 @@ const AppSchema = new Schema({
     callbackUrl : {
         type : String,
         required : false
-    }
+    },
+    
+    deletedAt : Date
 },{timestamps : true});
 
 module.exports = mongoose.model('App', AppSchema);

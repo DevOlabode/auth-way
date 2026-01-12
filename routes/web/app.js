@@ -19,4 +19,6 @@ router.delete('/:id', catchAsync(controller.deleteApp));
 
 router.get('/:id/edit', catchAsync(controller.editForm));
 
+router.put('/:id', catchAsync(controller.updateApp));
+
 module.exports = router;

@@ -10,7 +10,7 @@
 
   <!-- Edit App Form -->
   <form
-    action="/apps/<%= app._id %>?_method=PUT"
+    action="/app/<%= app._id %>?_method=PUT"
     method="POST"
     class="form-card"
   >
@@ -88,7 +88,7 @@
     </p>
 
     <form
-      action="/apps/<%= app._id %>?_method=DELETE"
+      action="/app/<%= app._id %>?_method=DELETE"
       method="POST"
     >
       <button type="submit" class="btn-danger">
