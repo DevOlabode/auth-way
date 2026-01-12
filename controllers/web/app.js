@@ -14,6 +14,9 @@ module.exports.newApp = async(req, res)=>{
         isActive : true
     });
 
+    app.generateClientId();
+    app.generateClientSecret();
+
     await app.save();
 
     req.flash('success', 'App created successdfully');

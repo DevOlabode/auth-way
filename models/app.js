@@ -35,12 +35,6 @@ const AppSchema = new Schema(
       select: false
     },
 
-    apiKey: {
-      type: String,
-      unique: true,
-      sparse: true
-    },
-
     deletedAt: Date
   },
   { timestamps: true }
