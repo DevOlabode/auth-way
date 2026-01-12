@@ -28,6 +28,34 @@ module.exports.newApp = async (req, res) => {
   });
 };
 
+module.exports.rotateClientSecret = async (req, res) => {
+  const { id } = req.params;
+
+  // Find app and ensure it belongs to the logged-in developer
+  const app = await App.findOne({
+    _id: id,
+    owner: req.user._id,
+    deletedAt: { $exists: false }
+  });
+
+  if (!app) {
+    req.flash('error', 'App not found or access denied');
+    return res.redirect('/dashboard');
+  }
+
+  // Generate new secret
+  const newClientSecret = app.generateClientSecret();
+
+  await app.save();
+
+  // Show it ONCE
+  res.render('app/rotated', {
+    app,
+    clientSecret: newClientSecret,
+    title : 'Rotate Client Secret'
+  });
+};
+
 
 module.exports.manage = async(req, res)=>{
     const app = await App.findById(req.params.id);

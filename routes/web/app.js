@@ -23,4 +23,7 @@ router.get('/:id/edit', catchAsync(controller.editForm));
 
 router.put('/:id', catchAsync(controller.updateApp));
 
+router.post('/:id/rotate-secret',catchAsync(controller.rotateClientSecret));
+  
+
 module.exports = router;
