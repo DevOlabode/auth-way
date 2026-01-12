@@ -259,3 +259,15 @@
   .action-spacing {
     margin-bottom: 1rem;
   }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+  
+  .header-actions {
+    flex-shrink: 0;
+  }
+  
