@@ -57,12 +57,14 @@
   <section class="card">
     <h2>Actions</h2>
 
-    <div class="action-row">
-      <form action="/apps/<%= app._id %>/toggle" method="POST">
-        <button class="btn-secondary">
-          <%= app.isActive ? 'Disable App' : 'Enable App' %>
-        </button>
-      </form>
+    <form action="/app/<%= app._id %>/toggle" method="POST">
+      <button
+        class="btn <%= app.isActive ? 'btn-warning' : 'btn-success' %>"
+      >
+        <%= app.isActive ? 'Disable App' : 'Enable App' %>
+      </button>
+    </form>
+    
 
       <form
         action="/app/<%= app._id %>?_method=DELETE"

@@ -82,3 +82,29 @@ module.exports.updateApp = async (req, res) => {
     req.flash('success', 'App updated successfully');
     res.redirect(`/app/${app._id}`);
   };
+
+  module.exports.toggleApp = async (req, res) => {
+    const { id } = req.params;
+  
+    const app = await App.findById(id);
+  
+    if (!app) {
+      req.flash('error', 'App not found');
+      return res.redirect('/dashboard');
+    }
+  
+    if (!app.owner.equals(req.user._id)) {
+      req.flash('error', 'You are not authorized to modify this app');
+      return res.redirect('/dashboard');
+    }
+  
+    app.isActive = !app.isActive;
+    await app.save();
+  
+    req.flash(
+      'success',
+      `App ${app.isActive ? 'enabled' : 'disabled'} successfully`
+    );
+  
+    res.redirect('/dashboard');
+};

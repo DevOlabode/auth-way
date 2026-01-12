@@ -13,6 +13,8 @@ router.get('/new', controller.newForm);
 
 router.post('/', catchAsync(controller.newApp));
 
+router.post('/:id/toggle', catchAsync(controller.toggleApp));
+
 router.get('/:id', catchAsync(controller.manage));
 
 router.delete('/:id', catchAsync(controller.deleteApp));
