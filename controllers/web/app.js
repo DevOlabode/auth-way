@@ -17,11 +17,10 @@ module.exports.newApp = async (req, res) => {
 
   app.generateClientId();
 
-  const rawClientSecret = app.generateClientSecret(); // ← STORE IT
+  const rawClientSecret = app.generateClientSecret();
 
   await app.save();
 
-  // ❗ Render ONCE with the secret
   res.render('app/created', {
     app,
     clientSecret: rawClientSecret,
