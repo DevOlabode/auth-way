@@ -3,10 +3,17 @@ const App = require('../../models/app');
 
 const crypto = require('crypto');
 
-module.exports.dashboard = async(req, res)=>{
-    const user = await User.findById(req.user._id);
-    const apps = await App.find({owner : req.user._id});
-    res.render('user/dashboard', {user, apps, title : 'Dashboard'})
+module.exports.dashboard = async (req, res) => {
+  const apps = await App.find({
+    owner: req.user._id,
+    deletedAt: { $exists: false } 
+  }).sort({ createdAt: -1 });
+
+  res.render('user/dashboard', {
+    title: 'Dashboard',
+    user: req.user,
+    apps
+  });
 };
 
 function generateResetToken() {
