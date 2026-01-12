@@ -1,35 +1,84 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const AppSchema = new Schema({
+const AppSchema = new Schema(
+  {
     name: {
-        type : String,
-        required : true
+      type: String,
+      required: true
     },
+
     owner: {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'Developer'
+      type: Schema.Types.ObjectId,
+      ref: 'Developer',
+      required: true
     },
-    isActive: { 
-        type: Boolean, 
-        default: true 
+
+    description: String,
+
+    callbackUrl: String,
+
+    isActive: {
+      type: Boolean,
+      default: true
     },
-    description : {
-        type : String,
-        required : false
+
+    // 🔑 App credentials
+    clientId: {
+      type: String,
+      unique: true,
+      index: true
     },
-    callbackUrl : {
-        type : String,
-        required : false
+
+    clientSecretHash: {
+      type: String,
+      select: false
     },
-    
-    deletedAt : Date
-},{timestamps : true});
+
+    apiKey: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+
+    deletedAt: Date
+  },
+  { timestamps: true }
+);
+
 
 AppSchema.methods.generateApiKey = function () {
     const key = crypto.randomBytes(32).toString('hex');
     this.apiKey = key;
     return key;
 };
+
+AppSchema.methods.generateClientId = function () {
+    const id = `app_${crypto.randomBytes(12).toString('hex')}`;
+    this.clientId = id;
+    return id;
+};
+
+AppSchema.methods.generateClientSecret = function () {
+    const secret = `sk_${crypto.randomBytes(32).toString('hex')}`;
+  
+    const hash = crypto
+      .createHash('sha256')
+      .update(secret)
+      .digest('hex');
+  
+    this.clientSecretHash = hash;
+  
+    return secret;
+};
+  
+AppSchema.methods.verifyClientSecret = function (secret) {
+    const hash = crypto
+      .createHash('sha256')
+      .update(secret)
+      .digest('hex');
+  
+    return hash === this.clientSecretHash;
+};  
 
 module.exports = mongoose.model('App', AppSchema);
