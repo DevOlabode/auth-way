@@ -65,8 +65,7 @@ module.exports.updateApp = async (req, res) => {
       req.flash('error', 'App not found');
       return res.redirect('/dashboard');
     }
-  
-    // 🔐 Ownership check
+
     if (!app.owner.equals(req.user._id)) {
       req.flash('error', 'You are not authorized to update this app');
       return res.redirect('/dashboard');

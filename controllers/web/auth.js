@@ -47,7 +47,6 @@ module.exports.register =  async (req, res) => {
   
       await User.register(user, password);
   
-      user.generateApiKey();
       await user.save();
 
       await welcomeEmail(user.email, user.name, verifyUrl);

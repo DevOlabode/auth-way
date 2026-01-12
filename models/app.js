@@ -46,13 +46,6 @@ const AppSchema = new Schema(
   { timestamps: true }
 );
 
-
-AppSchema.methods.generateApiKey = function () {
-    const key = crypto.randomBytes(32).toString('hex');
-    this.apiKey = key;
-    return key;
-};
-
 AppSchema.methods.generateClientId = function () {
     const id = `app_${crypto.randomBytes(12).toString('hex')}`;
     this.clientId = id;
