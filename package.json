@@ -2,11 +2,11 @@
   "name": "authway",
   "version": "1.0.0",
   "main": "index.js",
-"scripts": {
-  "start": "node src/index.js",
-  "dev": "nodemon src/index.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
-},
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "ejs-mate": "^4.0.0",
     "express": "^5.2.1",
     "express-session": "^1.18.2",
+    "jsonwebtoken": "^9.0.3",
     "method-override": "^3.0.0",
     "mongoose": "^9.1.2",
     "nodemailer": "^7.0.12",

@@ -20,7 +20,6 @@ module.exports.verifyClient = async (req, res, next) => {
 
     const clientSecret = tokenParts[1];
 
-    // IMPORTANT: include clientSecretHash explicitly
     const app = await App.findOne({ clientId, deletedAt: null })
       .select('+clientSecretHash');
 
@@ -51,7 +50,7 @@ module.exports.verifyClient = async (req, res, next) => {
   } catch (err) {
     console.error('verifyClient error:', err);
     res.status(500).json({
-      error: 'Internal authentication error'
+    error: 'Internal authentication error'
     });
   }
 };
