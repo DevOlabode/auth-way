@@ -1,5 +1,9 @@
 const jwt = require('jsonwebtoken');
 
+if (!process.env.ENDUSER_JWT_SECRET) {
+  throw new Error('ENDUSER_JWT_SECRET is not defined');
+}
+
 const JWT_SECRET = process.env.ENDUSER_JWT_SECRET;
 const JWT_EXPIRES_IN = '7d';
 
