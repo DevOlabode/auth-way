@@ -88,3 +88,11 @@ module.exports.login = async (req, res) => {
     }
   });
 };
+
+module.exports.me = (req, res) => {
+  res.json({
+    id: req.endUser._id,
+    email: req.endUser.email,
+    app: req.app.name
+  })
+}

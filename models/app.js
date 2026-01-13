@@ -59,4 +59,4 @@ AppSchema.methods.verifyClientSecret = async function (secret) {
   return bcrypt.compare(secret, this.clientSecretHash);
 };
 
-module.exports = mongoose.model('App', AppSchema);
+module.exports = mongoose.models.App || mongoose.model('App', AppSchema);

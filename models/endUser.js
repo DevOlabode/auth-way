@@ -48,4 +48,4 @@ EndUserSchema.methods.verifyPassword = async function (password) {
   return bcrypt.compare(password, this.passwordHash);
 };
 
-module.exports = mongoose.model('EndUser', EndUserSchema);
+module.exports = mongoose.models.EndUser || mongoose.model('EndUser', EndUserSchema);
