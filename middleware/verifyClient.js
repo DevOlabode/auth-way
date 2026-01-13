@@ -1,4 +1,4 @@
-const App = require('../../models/app');
+const App = require('../models/app');
 
 module.exports.verifyClient = async (req, res, next) => {
   try {

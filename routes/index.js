@@ -5,7 +5,11 @@ const router = express.Router();
 
 const webAuthRoutes = require('./web/auth');
 const webUserRoutes = require('./web/user');
-const webAppRoutes = require('./web/app')
+const webAppRoutes = require('./web/app');
+
+// API Routes
+
+const apiAuthRoutes = require('./api/auth');
 
 
 //    Mount Web Routes
@@ -16,7 +20,7 @@ router.use('/app', webAppRoutes);
 
 //    Mount API Routes
 
-// router.use('/api/auth', apiAuthRoutes);
+router.use('/api/auth', apiAuthRoutes);
 // router.use('/api/users', apiUserRoutes);
 // router.use('/api/health', healthRoutes);
 

@@ -43,3 +43,48 @@ module.exports.register = async(req, res)=>{
       }
     });
 };
+
+module.exports.login = async (req, res) => {
+  const { email, password } = req.body;
+  const app = req.appClient;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      error: 'Email and password are required'
+    });
+  }
+
+  const user = await EndUser.findOne({
+    app: app._id,
+    email,
+    deletedAt: null
+  }).select('+passwordHash');
+
+  if (!user) {
+    return res.status(401).json({
+      error: 'Invalid credentials'
+    });
+  }
+
+  const isValid = await user.verifyPassword(password);
+
+  if (!isValid) {
+    return res.status(401).json({
+      error: 'Invalid credentials'
+    });
+  }
+
+  user.lastLoginAt = new Date();
+  await user.save();
+
+  const token = signEndUserToken(user, app);
+
+  res.json({
+    message: 'Login successful',
+    token,
+    user: {
+      id: user._id,
+      email: user.email
+    }
+  });
+};
