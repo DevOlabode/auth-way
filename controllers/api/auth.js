@@ -2,6 +2,8 @@ const EndUser = require('../../models/endUser');
 
 const {signEndUserToken} = require('../../utils/jwt');
 
+
+//Register Route
 module.exports.register = async(req, res)=>{
     const {email, password} = req.body;
 
@@ -44,6 +46,8 @@ module.exports.register = async(req, res)=>{
     });
 };
 
+
+//login Controller 
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   const app = req.appClient;
@@ -89,19 +93,29 @@ module.exports.login = async (req, res) => {
   });
 };
 
-module.exports.me = (req, res) => {
-  res.json({
-    id: req.endUser._id,
-    email: req.endUser.email,
-    app: req.app.name
-  })
+
+//Profile Controller.
+module.exports.me = async (req, res) => {
+  const user = req.endUser;
+
+  res.status(200).json({
+    id: user._id,
+    email: user.email,
+    createdAt: user.createdAt,
+    app: user.app
+  });
 };
 
-module.exports.logout = async (req, res) => {
-  req.endUser.tokenVersion += 1;
-  await req.endUser.save();
 
-  res.json({
+// logout controller
+module.exports.logout = async (req, res) => {
+  const user = req.endUser;
+
+  user.tokenVersion += 1;
+  await user.save();
+
+  res.status(200).json({
     message: 'Logged out successfully'
   });
 };
+
