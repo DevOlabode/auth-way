@@ -1,49 +1,29 @@
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 
-/**
- * Helper to extract a unique key per app + IP
- */
-const appKeyGenerator = (req) => {
-  const clientId = req.headers['x-client-id'] || 'unknown-app';
-  return `${clientId}:${req.ip}`;
-};
-
-/**
- * Auth routes limiter
- * Protects login & register
- */
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // 20 attempts per window
-  keyGenerator: appKeyGenerator,
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
-  message: {
-    error: 'Too many authentication attempts. Please try again later.'
-  }
+  keyGenerator: (req) => ipKeyGenerator(req),
 });
 
-/**
- * General API limiter
- */
-const apiLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 100, // 100 requests per minute
-  keyGenerator: appKeyGenerator,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    error: 'Too many requests. Slow down.'
-  }
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Too many attempts. Try again later.' },
+  keyGenerator: (req) => ipKeyGenerator(req),
 });
 
 const webAuthLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 50
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  keyGenerator: (req) => ipKeyGenerator(req),
 });
 
 module.exports = {
-  authLimiter,
   apiLimiter,
-  webAuthLimiter
+  authLimiter,
+  webAuthLimiter,
 };
