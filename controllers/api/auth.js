@@ -96,13 +96,13 @@ module.exports.login = async (req, res) => {
 
 //Profile Controller.
 module.exports.me = async (req, res) => {
-  const user = req.endUser;
+  const user = await req.endUser.populate('app');
 
   res.status(200).json({
     id: user._id,
     email: user.email,
     createdAt: user.createdAt,
-    app: user.app
+    app : user.app
   });
 };
 
