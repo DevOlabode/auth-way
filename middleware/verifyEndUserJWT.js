@@ -8,20 +8,16 @@ module.exports.verifyEndUserJWT = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
-    // 1. Check header exists
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         error: 'Missing or invalid Authorization header'
       });
     }
 
-    // 2. Extract token
     const token = authHeader.split(' ')[1];
 
-    // 3. Verify token
     const payload = jwt.verify(token, JWT_SECRET);
 
-    // 4. Fetch app (scope enforcement)
     const app = await App.findById(payload.app);
 
     if (!app || !app.isActive) {
@@ -30,7 +26,6 @@ module.exports.verifyEndUserJWT = async (req, res, next) => {
       });
     }
 
-    // 5. Fetch end user
     const endUser = await EndUser.findById(payload.sub);
 
     if (!endUser) {
@@ -39,7 +34,6 @@ module.exports.verifyEndUserJWT = async (req, res, next) => {
       });
     }
 
-    // 6. Attach to request
     req.endUser = endUser;
     req.app = app;
 
