@@ -15,6 +15,9 @@ const requireEndUserAuth = require('../../middleware/requireEndUserAuth');
 
 const { authLimiter } = require('../../middleware/rateLimiters');
 
+const { validate } = require('../../validators/validate');
+const schemas = require('../../validators/api/endUserAuth');
+
 router.use(apiLimiter);
 
 /*
@@ -23,9 +26,9 @@ router.use(apiLimiter);
   Authorization: Bearer client_secret
 */
 
-router.post('/register', verifyClient, authLimiter, authController.register);
+router.post('/register', validate(schemas.registerSchema), verifyClient, authLimiter, authController.register);
 
-router.post('/login', verifyClient, authLimiter, authController.login);
+router.post('/login', validate(schemas.loginSchema), verifyClient, authLimiter, authController.login);
 
 router.get('/me', verifyEndUserJWT, authController.me);
 
