@@ -1,56 +1,59 @@
-const App = require('../models/app');
+const App = require('../models/App');
+const { ApiError } = require('../utils/apiError');
 
 module.exports.verifyClient = async (req, res, next) => {
-  try {
-    const clientId = req.header('X-Client-Id');
-    const authHeader = req.header('Authorization');
+  const clientId = req.header('X-Client-Id');
+  const authHeader = req.header('Authorization');
 
-    if (!clientId || !authHeader) {
-      return res.status(401).json({
-        error: 'Missing client credentials'
-      });
-    }
-
-    const tokenParts = authHeader.split(' ');
-    if (tokenParts[0] !== 'Bearer' || !tokenParts[1]) {
-      return res.status(401).json({
-        error: 'Invalid authorization format'
-      });
-    }
-
-    const clientSecret = tokenParts[1];
-
-    const app = await App.findOne({ clientId, deletedAt: null })
-      .select('+clientSecretHash');
-
-    if (!app) {
-      return res.status(401).json({
-        error: 'Invalid client'
-      });
-    }
-
-    if (!app.isActive) {
-      return res.status(403).json({
-        error: 'App is disabled'
-      });
-    }
-
-    const isValid = await app.verifyClientSecret(clientSecret);
-
-    if (!isValid) {
-      return res.status(401).json({
-        error: 'Invalid client secret'
-      });
-    }
-
-    // Attach app to request
-    req.appClient = app;
-    next();
-
-  } catch (err) {
-    console.error('verifyClient error:', err);
-    res.status(500).json({
-    error: 'Internal authentication error'
-    });
+  if (!clientId || !authHeader) {
+    throw new ApiError(
+      401,
+      'MISSING_CLIENT_CREDENTIALS',
+      'Client ID and client secret are required'
+    );
   }
+
+  const [scheme, clientSecret] = authHeader.split(' ');
+
+  if (scheme !== 'Bearer' || !clientSecret) {
+    throw new ApiError(
+      401,
+      'INVALID_AUTH_FORMAT',
+      'Authorization header must be in the format: Bearer <client_secret>'
+    );
+  }
+
+  const app = await App.findOne({
+    clientId,
+    deletedAt: null
+  }).select('+clientSecretHash');
+
+  if (!app) {
+    throw new ApiError(
+      401,
+      'INVALID_CLIENT',
+      'Invalid client credentials'
+    );
+  }
+
+  if (!app.isActive) {
+    throw new ApiError(
+      403,
+      'APP_DISABLED',
+      'This application is disabled'
+    );
+  }
+
+  const isValid = await app.verifyClientSecret(clientSecret);
+
+  if (!isValid) {
+    throw new ApiError(
+      401,
+      'INVALID_CLIENT_SECRET',
+      'Invalid client credentials'
+    );
+  }
+
+  req.appClient = app;
+  next();
 };

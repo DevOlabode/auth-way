@@ -1,11 +1,16 @@
 const jwt = require('jsonwebtoken');
 const EndUser = require('../models/EndUser');
+const { ApiError } = require('../utils/apiError');
 
 module.exports = async function requireEndUserAuth(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Missing token' });
+    throw new ApiError(
+      401,
+      'UNAUTHORIZED',
+      'Authentication token is required'
+    );
   }
 
   const token = authHeader.split(' ')[1];
@@ -16,11 +21,19 @@ module.exports = async function requireEndUserAuth(req, res, next) {
     const user = await EndUser.findById(payload.sub);
 
     if (!user) {
-      return res.status(401).json({ error: 'User not found' });
+      throw new ApiError(
+        401,
+        'INVALID_TOKEN',
+        'Invalid or expired token'
+      );
     }
 
     if (user.tokenVersion !== payload.tokenVersion) {
-      return res.status(401).json({ error: 'Token revoked' });
+      throw new ApiError(
+        401,
+        'TOKEN_REVOKED',
+        'Token has been revoked'
+      );
     }
 
     req.endUser = user;
@@ -28,6 +41,14 @@ module.exports = async function requireEndUserAuth(req, res, next) {
 
     next();
   } catch (err) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
+    if (err instanceof ApiError) {
+      throw err;
+    }
+
+    throw new ApiError(
+      401,
+      'INVALID_TOKEN',
+      'Invalid or expired token'
+    );
   }
 };

@@ -1,30 +1,41 @@
 const jwt = require('jsonwebtoken');
 const EndUser = require('../models/EndUser');
-const App = require('../models/App');
+const { ApiError } = require('../utils/apiError');
 
 const JWT_SECRET = process.env.ENDUSER_JWT_SECRET;
 
-module.exports.verifyEndUserJWT =  async (req, res, next) => {
+module.exports.verifyEndUserJWT = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new ApiError(
+      401,
+      'UNAUTHORIZED',
+      'Authentication token is required'
+    );
+  }
+
+  const token = authHeader.split(' ')[1];
+
   try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Missing token' });
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    const payload = jwt.verify(token, process.env.ENDUSER_JWT_SECRET);
+    const payload = jwt.verify(token, JWT_SECRET);
 
     const endUser = await EndUser.findById(payload.sub);
 
     if (!endUser) {
-      return res.status(401).json({ error: 'User not found' });
+      throw new ApiError(
+        401,
+        'INVALID_TOKEN',
+        'Invalid or expired token'
+      );
     }
 
-    // 🔐 THIS IS THE IMPORTANT PART
-    if (payload.tokenVersion !== endUser.tokenVersion) {
-      return res.status(401).json({ error: 'Token revoked' });
+    if (endUser.tokenVersion !== payload.tokenVersion) {
+      throw new ApiError(
+        401,
+        'TOKEN_REVOKED',
+        'Token has been revoked'
+      );
     }
 
     req.endUser = endUser;
@@ -32,6 +43,14 @@ module.exports.verifyEndUserJWT =  async (req, res, next) => {
 
     next();
   } catch (err) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
+    if (err instanceof ApiError) {
+      throw err;
+    }
+
+    throw new ApiError(
+      401,
+      'INVALID_TOKEN',
+      'Invalid or expired token'
+    );
   }
 };
