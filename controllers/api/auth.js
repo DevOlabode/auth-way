@@ -1,6 +1,7 @@
 const EndUser = require('../../models/endUser');
 const { signEndUserToken } = require('../../utils/jwt');
 const { ApiError } = require('../../utils/apiError');
+const App = require('../../models/app')
 
 
 // =======================
@@ -38,7 +39,10 @@ module.exports.register = async (req, res) => {
 
   await user.setPassword(password);
 
-  app.usage.totalRegistrations += 1;
+  const appO = await App.findById(app._id);
+  appO.usage.registrations += 1;
+
+  await appO.save();
 
   await user.save();
 
@@ -95,7 +99,10 @@ module.exports.login = async (req, res) => {
 
   user.lastLoginAt = new Date();
 
-  app.usage.totalLogins += 1;
+  const appO = await App.findById(app._id);
+  appO.usage.totalLogins += 1;
+
+  await appO.save();
 
   await user.save();
 
