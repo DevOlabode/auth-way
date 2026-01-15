@@ -1,0 +1,57 @@
+/* Error Page Container */
+.error-container {
+    max-width: 600px;
+    margin: 6rem auto;
+    text-align: center;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Error Code (404, 500, etc.) */
+.error-code {
+    font-size: 7rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+/* Specific colors for each error type */
+.error-404 {
+    color: #6c757d;
+}
+
+.error-500 {
+    color: #dc3545;
+}
+
+/* Error Title */
+.error-title {
+    margin-top: 1rem;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Error Description */
+.error-message {
+    color: #6c757d;
+    margin: 1rem 0 2rem;
+    font-size: 1.1rem;
+}
+
+/* Button */
+.error-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #0d6efd;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.error-btn:hover {
+    background: #0b5ed7;
+}
