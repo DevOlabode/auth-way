@@ -13,7 +13,9 @@ const passport = require('../config/passport');
 
 const sessionConfig = require('../config/session');
 
-const methodOverride = require('method-override')
+const methodOverride = require('method-override');
+
+const ExpressError = require('../utils/ExpressError');
 
 const routes = require('../routes/index');
 
@@ -45,6 +47,32 @@ app.use((req, res, next) => {
   });
 
 app.use(routes);  
+
+
+// Error Handler.  
+
+app.use((req, res, next) => {
+  next(new ExpressError('Page Not Found', 404));
+});
+
+app.use((err, req, res, next) => {
+  const status = err.statusCode || 500;
+
+  // API error handler
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(status).json({
+      error: err.message || 'Something went wrong'
+    });
+  }
+
+  // Web error handler
+  if (status === 404) {
+    return res.status(404).render('error/404');
+  }
+
+  console.error(err);
+  res.status(status).render('error/500');
+});
   
 
 const PORT = process.env.PORT;

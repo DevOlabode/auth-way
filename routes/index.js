@@ -40,16 +40,4 @@ router.get('/', (req, res) => {
     });
   });
 
-//    404 Handler
-
-router.use((req, res) => {
-  // API 404
-  if (req.originalUrl.startsWith('/api/')) {
-    return res.status(404).json({ error: 'API route not found' });
-  }
-
-  // Web 404
-  res.status(404).json({ title: 'Page Not Found' });
-});
-
 module.exports = router;
