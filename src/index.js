@@ -67,11 +67,11 @@ app.use((err, req, res, next) => {
 
   // Web error handler
   if (status === 404) {
-    return res.status(404).render('error/404');
+    return res.status(404).render('error/404', {title : 'Page Not Found'});
   }
 
   console.error(err);
-  res.status(status).render('error/500');
+  res.status(status).render('error/500', {title : 'Internal Server Error'});
 });
   
 
