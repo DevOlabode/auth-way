@@ -63,7 +63,7 @@ This document tracks what is done and what remains for AuthWay as an authenticat
 ## 🚀 Production / SaaS Features
 
 ### Developer Experience
-- [ ] API documentation (OpenAPI / Swagger)
+- [x] API documentation (OpenAPI / Swagger)
 - [ ] Postman collection
 - [ ] Example SDK usage (Node.js)
 - [ ] Copy-paste integration snippets
