@@ -15,8 +15,22 @@ const sessionConfig = require('../config/session');
 
 const methodOverride = require('method-override');
 
-const setupSwagger = require('../utils/swagger');
-setupSwagger(app);
+// const setupSwagger = require('../utils/swagger');
+// setupSwagger(app);
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('../docs/swagger');
+
+swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'AuthWay API Docs',
+  customCss: `
+    .swagger-ui .topbar {
+      background-color: #0f172a;
+    }
+  `,
+});
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const ExpressError = require('../utils/ExpressError');
 
