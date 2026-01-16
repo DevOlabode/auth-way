@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: AuthWay API
+  description: Authentication-as-a-Service API for developers
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development
+
+tags:
+  - name: Client Auth
+  - name: End Users
+
+components:
+  securitySchemes:
+    ClientAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: |
+        Bearer <CLIENT_SECRET>
+    ClientId:
+      type: apiKey
+      in: header
+      name: X-Client-Id
+    EndUserAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: string
+
+    EndUser:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+
+paths:
+
+  /api/auth/register:
+    post:
+      tags: [End Users]
+      summary: Register an end user
+      security:
+        - ClientAuth: []
+          ClientId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  example: user@test.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        201:
+          description: User registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/EndUser'
+        409:
+          description: User exists
+        400:
+          description: Validation error
+
+  /api/auth/login:
+    post:
+      tags: [End Users]
+      summary: Login an end user
+      security:
+        - ClientAuth: []
+          ClientId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/EndUser'
+        401:
+          description: Invalid credentials
+
+  /api/auth/me:
+    get:
+      tags: [End Users]
+      summary: Get current end user
+      security:
+        - EndUserAuth: []
+      responses:
+        200:
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndUser'
+        401:
+          description: Unauthorized
+
+  /api/auth/logout:
+    post:
+      tags: [End Users]
+      summary: Logout end user
+      security:
+        - EndUserAuth: []
+      responses:
+        200:
+          description: Logged out

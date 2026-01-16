@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 
 const ejsMate = require('ejs-mate');
-const path = require('path')
+const path = require('path');
 
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -14,6 +14,9 @@ const passport = require('../config/passport');
 const sessionConfig = require('../config/session');
 
 const methodOverride = require('method-override');
+
+const setupSwagger = require('../utils/swagger');
+setupSwagger(app);
 
 const ExpressError = require('../utils/ExpressError');
 
