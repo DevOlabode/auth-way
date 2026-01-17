@@ -64,8 +64,8 @@ This document tracks what is done and what remains for AuthWay as an authenticat
 
 ### Developer Experience
 - [x] API documentation (OpenAPI / Swagger)
-- [ ] Postman collection
-- [ ] Example SDK usage (Node.js)
+- [x] Postman collection
+- [x] Example SDK usage (Node.js)
 - [ ] Copy-paste integration snippets
 - [ ] Dashboard usage metrics
 
