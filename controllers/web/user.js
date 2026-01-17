@@ -2,6 +2,7 @@ const User = require('../../models/developer');
 const App = require('../../models/app');
 
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 module.exports.dashboard = async (req, res) => {
   const apps = await App.find({
@@ -111,5 +112,13 @@ module.exports.forgotPassword = async (req, res) => {
 
   module.exports.deleteAccount = async(req, res)=>{
     const {password} = req.body;
-    res.send(req.body);
+    const user = await User.findById(req.user._id);
+
+    const isMatch = await passport.compare(password, user.password);
+
+    if(!isMatch){
+      res.send('Incorrect Password')
+    }else{
+      res.send('Correct Password')
+    }
   };
