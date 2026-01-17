@@ -96,5 +96,15 @@ module.exports.forgotPassword = async (req, res) => {
   
     req.flash('success', 'Password updated. You can now log in.');
     res.redirect('/login');
+  };
+
+  module.exports.deleteAccountForm = async(req, res)=>{
+    const user = await User.findById(req.user._id);
+
+    if(!user){
+      req.flash('error', 'User Not Found!');
+      res.redirect('/dashboard');
+    }
+
+    res.render('user/enterPassword', {title : 'Enter Password To Delete Account'})
   }
-  
