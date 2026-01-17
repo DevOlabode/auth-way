@@ -75,7 +75,7 @@ This document tracks what is done and what remains for AuthWay as an authenticat
 - [ ] Refresh tokens
 - [ ] Token revocation strategy
 - [ ] Per-app rate limits
-- [ ] CORS configuration per app
+- [x] CORS configuration per app
 - [ ] Environment separation (dev / prod keys)
 - [ ] Monitoring & alerting
 
