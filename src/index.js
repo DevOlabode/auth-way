@@ -15,8 +15,9 @@ const sessionConfig = require('../config/session');
 
 const methodOverride = require('method-override');
 
-// const setupSwagger = require('../utils/swagger');
-// setupSwagger(app);
+const cors  = require('cors');
+const corsOptions = require('../middleware/corsOptions');
+app.use(cors(corsOptions));
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('../docs/swagger');
