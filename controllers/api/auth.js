@@ -248,3 +248,97 @@ module.exports.verifyEmail = async (req, res) => {
     message: 'Email verified successfully'
   });
 };
+
+/* Forgotten Password */
+
+module.exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const app = req.appClient;
+
+  if (!email) {
+    throw new ApiError(
+      400,
+      'VALIDATION_ERROR',
+      'Email is required'
+    );
+  }
+
+  const user = await EndUser.findOne({
+    app: app._id,
+    email,
+    isEmailVerified: true
+  });
+
+  if (!user) {
+    return res.status(200).json({
+      message: 'If that email exists, a reset link has been sent'
+    });
+  }
+
+  const resetToken = user.generatePasswordResetToken();
+  await user.save();
+
+  const resetUrl = `${process.env.BASE_URL}/api/auth/reset-password?token=${resetToken}&appId=${app._id}`;
+
+  await sendPasswordResetEmail(
+    user.email,
+    app.name,
+    resetUrl
+  );
+
+  res.status(200).json({
+    message: 'If that email exists, a reset link has been sent'
+  });
+};
+
+/* Reset Password */
+module.exports.resetPassword = async (req, res) => {
+  const { token, appId, password } = req.body;
+
+  if (!token || !appId || !password) {
+    throw new ApiError(
+      400,
+      'VALIDATION_ERROR',
+      'Token, appId and password are required'
+    );
+  }
+
+  if (!validatePassword(password)) {
+    throw new ApiError(
+      400,
+      'WEAK_PASSWORD',
+      PASSWORD_RULES_MESSAGE
+    );
+  }
+
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(token)
+    .digest('hex');
+
+  const user = await EndUser.findOne({
+    app: appId,
+    resetPasswordToken: hashedToken,
+    resetPasswordExpires: { $gt: Date.now() }
+  }).select('+passwordHash');
+
+  if (!user) {
+    throw new ApiError(
+      400,
+      'INVALID_TOKEN',
+      'Reset token is invalid or expired'
+    );
+  }
+
+  await user.setPassword(password);
+
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  user.tokenVersion += 1; // invalidate existing JWTs
+
+  await user.save();
+
+  res.status(200).json({
+    message: 'Password reset successful'
+  });
+};

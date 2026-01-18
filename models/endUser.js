@@ -36,7 +36,15 @@ const EndUserSchema = new Schema(
       default: 0
     },
 
+    resetPasswordToken: {
+      type: String,
+      select: false
+    },
+    
+    resetPasswordExpires: Date,
+    
     lastLoginAt: Date,
+
     deletedAt: Date
   },
   { timestamps: true }
@@ -70,6 +78,20 @@ EndUserSchema.methods.generateEmailVerificationToken = async function () {
 
   return rawToken;
 };
+
+EndUserSchema.methods.generatePasswordResetToken = function () {
+  const rawToken = crypto.randomBytes(32).toString('hex');
+
+  this.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(rawToken)
+    .digest('hex');
+
+  this.resetPasswordExpires = Date.now() + 1000 * 60 * 30; // 30 minutes
+
+  return rawToken;
+};
+
 
 
 module.exports = mongoose.models.EndUser || mongoose.model('EndUser', EndUserSchema);

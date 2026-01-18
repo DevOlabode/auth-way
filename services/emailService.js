@@ -106,3 +106,23 @@ module.exports.verifyEndUsers = async(to, name, verifyUrl)=>{
 `
   })
 };
+
+
+module.exports.sendPasswordResetEmail = async (to, appName, resetUrl) => {
+  return transporter.sendMail({
+    from: '"AuthWay" <no-reply@authway.dev>',
+    to,
+    subject: `Reset your ${appName} password`,
+    html: `
+      <h2>Password Reset</h2>
+      <p>You requested to reset your password for <b>${appName}</b>.</p>
+      <p>
+        <a href="${resetUrl}" style="padding:10px 16px;background:#000;color:#fff;text-decoration:none;">
+          Reset Password
+        </a>
+      </p>
+      <p>This link expires in 30 minutes.</p>
+      <p>If you didn’t request this, you can safely ignore this email.</p>
+    `
+  });
+};
