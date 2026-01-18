@@ -104,6 +104,5 @@ module.exports.verifyEndUsers = async(to, name, verifyUrl)=>{
   </p>
 </div>
 `
-
   })
 };

@@ -146,6 +146,8 @@ module.exports.login = async (req, res) => {
 // ME
 // =======================
 module.exports.me = async (req, res) => {
+  const user = await req.endUser.populate('app');
+
   if (!req.endUser) {
     throw new ApiError(
       401,
@@ -162,9 +164,6 @@ module.exports.me = async (req, res) => {
     );
   }
   
-
-  const user = await req.endUser.populate('app');
-
   res.status(200).json({
     id: user._id,
     email: user.email,
@@ -194,11 +193,16 @@ module.exports.logout = async (req, res) => {
   });
 };
 
+// verify Email.
 module.exports.verifyEmail = async (req, res) => {
   const { token, appId } = req.query;
 
   if (!token || !appId) {
-    throw new ApiError(400, 'INVALID_TOKEN', 'Invalid verification link');
+    throw new ApiError(
+      400,
+      'INVALID_VERIFICATION_LINK',
+      'Invalid verification link'
+    );
   }
 
   const hashedToken = crypto
@@ -206,11 +210,17 @@ module.exports.verifyEmail = async (req, res) => {
     .update(token)
     .digest('hex');
 
+    console.log(hashedToken);
+    console.log(appId);
+
   const user = await EndUser.findOne({
     app: appId,
-    emailVerificationToken: hashedToken,
-    emailVerificationExpires: { $gt: Date.now() }
+    isEmailVerified : false,
+    emailVerificationToken : hashedToken
   });
+
+  console.log('The User', user);
+  // 13675448408d0ff7dce9ce30f9ac3394963f975337c28ec1a731de1d546b482b
 
   if (!user) {
     throw new ApiError(
@@ -223,51 +233,6 @@ module.exports.verifyEmail = async (req, res) => {
   user.isEmailVerified = true;
   user.emailVerificationToken = undefined;
   user.emailVerificationExpires = undefined;
-
-  await user.save();
-
-  res.status(200).json({
-    message: 'Email verified successfully'
-  });
-}
-
-
-//Verify Email.
-
-module.exports.verifyEmail = async (req, res) => {
-  const { token, appId } = req.query;
-
-  if (!token || !appId) {
-    throw new ApiError(
-      400,
-      'INVALID_REQUEST',
-      'Token and appId are required'
-    );
-  }
-
-  const hashedToken = crypto
-    .createHash('sha256')
-    .update(token)
-    .digest('hex');
-
-  const user = await EndUser.findOne({
-    app: appId,
-    emailVerificationToken: hashedToken,
-    emailVerificationTokenExpiresAt: { $gt: Date.now() }
-  });
-
-  if (!user) {
-    throw new ApiError(
-      400,
-      'INVALID_OR_EXPIRED_TOKEN',
-      'Verification link is invalid or has expired'
-    );
-  }
-
-  // ✅ Mark verified
-  user.emailVerified = true;
-  user.emailVerificationToken = undefined;
-  user.emailVerificationTokenExpiresAt = undefined;
 
   await user.save();
 

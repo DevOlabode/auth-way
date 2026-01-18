@@ -55,17 +55,21 @@ EndUserSchema.methods.verifyPassword = async function (password) {
   return bcrypt.compare(password, this.passwordHash);
 };
 
-EndUserSchema.methods.generateEmailVerificationToken = function () {
-  const token = crypto.randomBytes(32).toString('hex');
+/* Email Verification Methods */
+EndUserSchema.methods.generateEmailVerificationToken = async function () {
+  const rawToken = crypto.randomBytes(32).toString('hex');
 
   this.emailVerificationToken = crypto
     .createHash('sha256')
-    .update(token)
+    .update(rawToken)
     .digest('hex');
 
-  this.emailVerificationExpires = Date.now() + 1000 * 60 * 60 * 24; // 24h
+  this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
 
-  return token; 
+  await this.save(); 
+
+  return rawToken;
 };
+
 
 module.exports = mongoose.models.EndUser || mongoose.model('EndUser', EndUserSchema);
