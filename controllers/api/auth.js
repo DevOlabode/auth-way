@@ -5,8 +5,11 @@ const App = require('../../models/app');
 
 const crypto = require('crypto');
 
-const {verifyEndUsers} = require('../../services/emailService');
+// EMAILS
+const {verifyEndUsers, sendPasswordResetEmail} = require('../../services/emailService');
 
+
+// PASSWORDS RULES
 const { validatePassword } = require('../../validators/password');
 const { PASSWORD_RULES_MESSAGE } = require('../../constants/passwordRules');
 
@@ -228,8 +231,6 @@ module.exports.verifyEmail = async (req, res) => {
     emailVerificationToken : hashedToken
   });
 
-  console.log('The User', user);
-
   if (!user) {
     throw new ApiError(
       400,
@@ -271,7 +272,7 @@ module.exports.forgotPassword = async (req, res) => {
 
   if (!user) {
     return res.status(200).json({
-      message: 'If that email exists, a reset link has been sent'
+      message: 'Email Not Found'
     });
   }
 
@@ -293,7 +294,11 @@ module.exports.forgotPassword = async (req, res) => {
 
 /* Reset Password */
 module.exports.resetPassword = async (req, res) => {
-  const { token, appId, password } = req.body;
+  const {  password } = req.body;
+  const {token, appId} = req.query
+
+  console.log('Query : ',req.query);
+  console.log('Body : ', req.body);
 
   if (!token || !appId || !password) {
     throw new ApiError(
@@ -301,7 +306,7 @@ module.exports.resetPassword = async (req, res) => {
       'VALIDATION_ERROR',
       'Token, appId and password are required'
     );
-  }
+  };
 
   if (!validatePassword(password)) {
     throw new ApiError(

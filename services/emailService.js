@@ -110,7 +110,7 @@ module.exports.verifyEndUsers = async(to, name, verifyUrl)=>{
 
 module.exports.sendPasswordResetEmail = async (to, appName, resetUrl) => {
   return transporter.sendMail({
-    from: '"AuthWay" <no-reply@authway.dev>',
+    from: '"AuthWay" <solabode499@gmail.com>',
     to,
     subject: `Reset your ${appName} password`,
     html: `
