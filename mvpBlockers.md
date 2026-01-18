@@ -1,8 +1,8 @@
 ## MVP Blockers
-- [ ] End-user email verification
-- [ ] Fix Swagger schema references
+- [x] End-user email verification
+- [x] Fix Swagger schema references
 - [ ] Enforce password rules
-- [ ] Lock down CORS for production
+- [x] Lock down CORS for production
 
 ## Optional (Post-MVP)
 - [ ] Forgot password
