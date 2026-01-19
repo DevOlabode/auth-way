@@ -46,6 +46,6 @@ router.post('/logout', requireEndUserAuth, catchAsync(authController.logout));
 
 router.get('/verify-email', catchAsync(authController.verifyEmail));
 
-router.post('/disable', catchAsync(authController.disableAccount));
+router.post('/disable', requireEndUserAuth, catchAsync(authController.disableAccount));
 
 module.exports = router;

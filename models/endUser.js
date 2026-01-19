@@ -14,7 +14,15 @@ const EndUserSchema = new Schema(
 
     isActive : {
       type : Boolean,
-      deffault : true
+      default : true
+    },
+
+    disabledAt : {
+      type : Date,
+    },
+
+    disabledReason : {
+      type : String,
     },
 
     email: {

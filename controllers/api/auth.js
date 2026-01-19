@@ -351,7 +351,7 @@ module.exports.resetPassword = async (req, res) => {
 // Disable Account.
 
 module.exports.disableAccount = async (req, res) => {
-  const user = req.user;
+  const user = req.endUser;
 
   if (!user.isActive) {
     throw new ApiError(
