@@ -1,4 +1,4 @@
-authway/
+voult.dev/
 ├── src/
 │   ├── app.js                # Express app setup
 │   ├── server.js             # HTTP server bootstrap
@@ -11,7 +11,7 @@ authway/
 │
 │   ├── models/
 │   │   ├── User.js            # End users (per app)
-│   │   ├── Developer.js       # AuthWay dashboard users
+│   │   ├── Developer.js       # voult.dev dashboard users
 │   │   ├── App.js             # Developer-created apps
 │   │   ├── ApiKey.js          # API keys for apps
 │   │   └── Token.js           # Verify/reset tokens

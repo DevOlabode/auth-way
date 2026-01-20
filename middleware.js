@@ -29,7 +29,7 @@ module.exports.storeReturnTo = (req, res, next)=>{
 
 
 module.exports.requireAPIKey = async (req, res, next) => {
-  const apiKey = req.header('X-Authway-App-Key');
+  const apiKey = req.header('X-voult.dev-App-Key');
 
   if (!apiKey) {
     return res.status(401).json({ error: 'API key required' });
@@ -46,13 +46,13 @@ module.exports.requireAPIKey = async (req, res, next) => {
 };
 
 
-// HOW FUTURE APPS WILL USE AUTHWAY.
+// HOW FUTURE APPS WILL USE voult.dev.
 /*
-fetch('https://authway.com/api/auth/login', {
+fetch('https://voult.dev.com/api/auth/login', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'X-Authway-App-Key': 'sk_live_xxx'
+    'X-voult.dev-App-Key': 'sk_live_xxx'
   },
   body: JSON.stringify({
     email,

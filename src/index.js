@@ -23,7 +23,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('../docs/swagger');
 
 swaggerUi.setup(swaggerSpec, {
-  customSiteTitle: 'AuthWay API Docs',
+  customSiteTitle: 'voult.dev API Docs',
   customCss: `
     .swagger-ui .topbar {
       background-color: #0f172a;

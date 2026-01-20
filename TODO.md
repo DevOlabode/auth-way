@@ -1,6 +1,6 @@
-# AuthWay – TODO / Roadmap
+# voult.dev – TODO / Roadmap
 
-This document tracks what is done and what remains for AuthWay as an authentication-as-a-service platform.
+This document tracks what is done and what remains for voult.dev as an authentication-as-a-service platform.
 
 ---
 
@@ -48,7 +48,7 @@ This document tracks what is done and what remains for AuthWay as an authenticat
 - [x] Password reset with token
 - [x] Email verification for end users
 - [x] Optional server-side logout (token versioning)
-- [ ] Account disable / soft delete
+- [x] Account disable / soft delete
 
 ---
 

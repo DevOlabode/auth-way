@@ -2,15 +2,15 @@ const { transporter } = require('../config/mailer');
 
 module.exports.forgottenPasswordEmail = (name, to, resetUrl)=>{
     return transporter.sendMail({
-      from : '"AuthWay" <solabode499@gmail.com>',
+      from : '"voult.dev" <solabode499@gmail.com>',
       to,
-      subject : "Reset your AuthWay password",
+      subject : "Reset your voult.dev password",
       html: `
   <div style="font-family: Arial, sans-serif; padding: 20px; background: #f3f4f6;">
     <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 28px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
       
       <h1 style="color: #111827; margin-top: 0;">
-        Reset your AuthWay password 🔐
+        Reset your voult.dev password 🔐
       </h1>
 
       <p style="font-size: 16px; color: #374151; line-height: 1.6;">
@@ -18,7 +18,7 @@ module.exports.forgottenPasswordEmail = (name, to, resetUrl)=>{
       </p>
 
       <p style="font-size: 16px; color: #374151; line-height: 1.6;">
-        We received a request to reset the password for your AuthWay account.
+        We received a request to reset the password for your voult.dev account.
       </p>
 
       <p style="font-size: 16px; color: #374151; line-height: 1.6;">
@@ -39,7 +39,7 @@ module.exports.forgottenPasswordEmail = (name, to, resetUrl)=>{
       </p>
 
       <p style="margin-top: 10px; font-size: 14px; color: #6b7280;">
-        — The AuthWay Team
+        — The voult.dev Team
       </p>
 
     </div>
