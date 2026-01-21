@@ -32,12 +32,12 @@ router.get('/', (req, res) => {
     if (req.isAuthenticated()) {
       return res.render('home/home-logged-in', {
         user: req.user,
-        title: 'AuthWay',
+        title: 'voult.dev',
       });
     }
   
     res.render('home/home-guest', {
-      title: 'AuthWay',
+      title: 'voult.dev',
     });
   });
 
