@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 
-class AuthWay {
+class voult {
 constructor({ baseUrl, clientId, clientSecret }) {
 this.http = axios.create({
 baseURL: baseUrl,
@@ -57,4 +57,4 @@ return data;
 }
 
 
-module.exports = AuthWay;
+module.exports = voult;
