@@ -18,34 +18,34 @@
 
   <!-- App Details -->
   <section class="card">
-    <h2>App Details</h2>
+    <h2 class="text-white">App Details</h2>
 
     <div class="detail-row">
-      <span>Name</span>
-      <span><%= app.name %></span>
+      <span class="text-white">Name</span>
+      <span class="text-white"><%= app.name %></span>
     </div>
 
     <div class="detail-row">
-      <span>Callback URL</span>
-      <span><%= app.callbackUrl %></span>
+      <span class="text-white">Callback URL</span>
+      <span class="text-white"><%= app.callbackUrl %></span>
     </div>
 
     <div class="detail-row">
-      <span>Status</span>
-      <span class="status <%= app.isActive ? 'active' : 'disabled' %>">
+      <span class="text-white">Status</span>
+      <span class="status <%= app.isActive ? 'active' : 'disabled' %>" class="text-white">
         <%= app.isActive ? 'Active' : 'Disabled' %>
       </span>
     </div>
 
     <div class="detail-row">
-      <span>Created</span>
-      <span><%= app.createdAt.toDateString() %></span>
+      <span class="text-white">Created</span>
+      <span class="text-white"><%= app.createdAt.toDateString() %></span>
     </div>
   </section>
 
   <!-- API Credentials -->
   <section class="card">
-    <h2>API Credentials</h2>
+    <h2 class="text-white">API Credentials</h2>
 
     <div class="api-box">
       <code><%= app.clientId %></code>
@@ -68,7 +68,7 @@
 
   <!-- Actions -->
   <section class="card">
-    <h2>Actions</h2>
+    <h2 class="text-white">Actions</h2>
 
     <form action="/app/<%= app._id %>/toggle" method="POST" class="action-spacing">
       <button class="btn <%= app.isActive ? 'btn-danger' : 'btn-secondary' %> ">
