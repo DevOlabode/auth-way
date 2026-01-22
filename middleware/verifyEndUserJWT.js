@@ -7,13 +7,17 @@ const JWT_SECRET = process.env.ENDUSER_JWT_SECRET;
 module.exports.verifyEndUserJWT = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  // if (!authHeader || !authHeader.startsWith('Bearer ')) {
-  //   throw new ApiError(
-  //     401,
-  //     'UNAUTHORIZED',
-  //     'Authentication token is required'
-  //   );
-  // }
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new ApiError(
+      401,
+      'UNAUTHORIZED',
+      'Authentication token is required'
+    );
+  }
+
+  console.log(authHeader);
+
+  console.log(req.headers);
 
   const token = authHeader.split(' ')[1];
 

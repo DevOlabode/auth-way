@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
+app.set('trust-proxy', 1);
+
 const ejsMate = require('ejs-mate');
 const path = require('path');
 
@@ -34,8 +36,6 @@ app.use(cors({
     'X-Client-Id'
   ]
 }));
-
-app.set('trust-proxy', 1);
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('../docs/swagger');
