@@ -4,7 +4,7 @@ const { ApiError } = require('../utils/apiError');
 module.exports.verifyClient = async (req, res, next) => {
   try {
     const clientId = req.header('X-Client-Id');
-    const authHeader = req.header('Authorization');
+    const authHeader = req.header('x-client-secret');
 
     console.log('HEADERS: ', req.headers);
 

@@ -30,7 +30,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
     'Content-Type',
-    'Authorization',
+    'x-client-secret',
     'X-Client-Id'
   ]
 }));

@@ -20,7 +20,7 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: [
     'Content-Type',
-    'Authorization',
+    'x-client-secret',
     'X-Client-Id'
   ],
 
