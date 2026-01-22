@@ -6,6 +6,8 @@ module.exports.verifyClient = async (req, res, next) => {
     const clientId = req.header('X-Client-Id');
     const authHeader = req.header('Authorization');
 
+    console.log('HEADERS: ', req.headers);
+
     if (!clientId || !authHeader) {
       throw new ApiError(401, 'MISSING_CLIENT_CREDENTIALS', 'Client credentials missing');
     }
