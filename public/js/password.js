@@ -4,7 +4,7 @@ passwordInput?.addEventListener('input', () => {
   const value = passwordInput.value;
 
   const strong =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(value);
+   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(value);
 
   passwordInput.setCustomValidity(
     strong ? '' : 'Weak password'
