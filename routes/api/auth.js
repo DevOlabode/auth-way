@@ -46,7 +46,7 @@ router.post('/logout', requireEndUserAuth, catchAsync(authController.logout));
 
 router.get('/verify-email', catchAsync(authController.verifyEmail));
 
-router.post('/disable', requireEndUserAuth, catchAsync(authController.disableAccount));
+router.post('/disable', verifyEndUserJWT, requireEndUserAuth, catchAsync(authController.disableAccount));
 
 router.post('/reenable', requireEndUserAuth, catchAsync(authController.reenableAccount));
 
