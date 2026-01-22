@@ -4,6 +4,7 @@ const { ApiError } = require('../utils/apiError');
 
 module.exports = async function requireEndUserAuth(req, res, next) {
   const authHeader = req.headers.x-client-token;
+  console.log(authHeader);
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new ApiError(
