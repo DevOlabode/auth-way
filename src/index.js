@@ -89,11 +89,12 @@ app.use(requestLogger)
 
 app.use(routes);  
 
-app.post('/debug-form', (req, res) => {
-  res.json({
+app.post('*', (req, res, next) => {
+  console.log({
     body: req.body,
     headers: req.headers['content-type']
   });
+  next();
 });
 
 // Error Handler.  
