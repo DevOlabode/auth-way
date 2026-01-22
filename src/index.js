@@ -87,18 +87,9 @@ app.use(express.urlencoded({
 const {requestLogger} = require('../middleware/requestLogger');
 app.use(requestLogger)
 
-app.use(routes);  
-
-app.post('*', (req, res, next) => {
-  console.log({
-    body: req.body,
-    headers: req.headers['content-type']
-  });
-  next();
-});
+app.use(routes); 
 
 // Error Handler.  
-
 const { sendError } = require('../utils/apiError');
 
 app.use('/api', (err, req, res, next) => {
