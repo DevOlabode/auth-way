@@ -35,6 +35,7 @@ app.use(cors({
   ]
 }));
 
+app.set('trust-proxy', 1);
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('../docs/swagger');
