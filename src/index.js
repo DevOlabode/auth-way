@@ -54,9 +54,6 @@ const ExpressError = require('../utils/ExpressError');
 
 const routes = require('../routes/index');
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 require('../config/database')();
 app.use(session(sessionConfig));
 app.use(flash());
@@ -81,10 +78,23 @@ app.use((req, res, next) => {
     next();
   });
 
+app.use(express.json());
+app.use(express.urlencoded({ 
+  extended: true,
+  limit : '10kb'
+}));
+
 const {requestLogger} = require('../middleware/requestLogger');
 app.use(requestLogger)
 
 app.use(routes);  
+
+app.post('/debug-form', (req, res) => {
+  res.json({
+    body: req.body,
+    headers: req.headers['content-type']
+  });
+});
 
 // Error Handler.  
 
