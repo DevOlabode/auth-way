@@ -5,7 +5,7 @@ const { ApiError } = require('../utils/apiError');
 const JWT_SECRET = process.env.ENDUSER_JWT_SECRET;
 
 module.exports.verifyEndUserJWT = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.x-client-token;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new ApiError(
@@ -14,8 +14,6 @@ module.exports.verifyEndUserJWT = async (req, res, next) => {
       'Authentication token is required'
     );
   }
-
-  console.log('Auth Header:', authHeader);
 
   console.log("Auth Headers: ", authHeader);
 
