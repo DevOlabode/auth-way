@@ -15,9 +15,26 @@ const sessionConfig = require('../config/session');
 
 const methodOverride = require('method-override');
 
-const cors  = require('cors');
-const corsOptions = require('../middleware/corsOptions');
-app.use(cors(corsOptions));
+// const cors  = require('cors');
+// const corsOptions = require('../middleware/corsOptions');
+// app.use(cors(corsOptions));
+
+const cors = require('cors');
+
+app.use(cors({
+  origin: [
+    'https://www.voult.dev',
+    'https://voult.onrender.com/'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Client-Id'
+  ]
+}));
+
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('../docs/swagger');

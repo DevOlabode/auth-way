@@ -6,8 +6,8 @@ const corsOptions = {
     if (!origin) return callback(null, true);
 
     const allowedOrigins = [
-      'http://localhost:3000',   // your dashboard
-      'http://localhost:5173'    // example frontend
+      'https://www.voult.dev',
+      'https://voult.onrender.com/'    
     ];
 
     if (allowedOrigins.includes(origin)) {
