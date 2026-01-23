@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: AuthWay API
+  title: voult.dev API
   description: Authentication-as-a-Service API for developers
   version: 1.0.0
 

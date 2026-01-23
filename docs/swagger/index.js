@@ -5,7 +5,7 @@ module.exports = swaggerJsdoc({
   definition: {
     openapi: '3.0.3',
     info: {
-      title: 'AuthWay API',
+      title: 'voult.dev API',
       version: '1.0.0',
       description: 'Multi-tenant authentication API'
     },
