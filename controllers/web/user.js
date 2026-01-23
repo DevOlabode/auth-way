@@ -71,7 +71,7 @@ module.exports.forgotPassword = async (req, res) => {
 
 
   module.exports.resetPassword = async (req, res) => {
-    const { password } = req.body;
+    const { password,confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
       req.flash('error', 'Passwords do not match');
