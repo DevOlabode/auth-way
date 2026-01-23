@@ -15,10 +15,6 @@ module.exports.verifyEndUserJWT = async (req, res, next) => {
     );
   };
 
-  console.log("Auth Headers: ", authHeader);
-
-  console.log("Headers: ", req.headers);
-
   const token = authHeader.split(' ')[1];
 
   try {
