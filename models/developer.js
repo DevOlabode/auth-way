@@ -21,11 +21,6 @@ const developerSchema = new Schema(
       trim: true,
     },
 
-    apiKey: {
-      type: String,
-      index: true,
-    },
-
     apiKeyActive: {
       type: Boolean,
       default: true,
