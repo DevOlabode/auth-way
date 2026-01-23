@@ -21,11 +21,6 @@ const developerSchema = new Schema(
       trim: true,
     },
 
-    apiKeyActive: {
-      type: Boolean,
-      default: true,
-    },
-
     allowedOrigins: [
       {
         type: String,
