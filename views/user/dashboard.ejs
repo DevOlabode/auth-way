@@ -25,7 +25,7 @@
       <div class="apps-grid">
         <% apps.forEach(app => { %>
           <div class="app-card">
-            <h3><%= app.name %></h3>
+            <h3 class="text-dark opacity-75"><%= app.name %></h3>
 
             <% if (app.description) { %>
               <p class="muted"><%= app.description %></p>
@@ -35,7 +35,7 @@
               <span class="status <%= app.isActive ? 'active' : 'disabled' %>">
                 <%= app.isActive ? 'Active' : 'Disabled' %>
               </span>
-              <span class="date">
+              <span class="date text-dark opacity-25">
                 <%= app.createdAt.toDateString() %>
               </span>
             </div>
@@ -64,10 +64,10 @@
   <section class="dashboard-section">
     <h2>Account</h2>
 
-    <div class="account-card">
-      <div class="text-dark opacity-50"><strong>Email:</strong> <%= user.email %></div>
-      <div class="text-dark opacity-50"><strong>Plan:</strong> <%= user.plan %></div>
-      <div class="text-dark opacity-50"><strong>Joined:</strong> <%= user.createdAt.toDateString() %></div>
+    <div class="account-card text-dark">
+      <div><strong>Email:</strong> <span class="opacity-75"><%= user.email %></span> </div>
+      <div><strong>Plan:</strong> <span class="opacity-75"><%= user.plan %></span></div>
+      <div><strong>Joined:</strong> <span class="opacity-75"> <%= user.createdAt.toDateString() %> </span> </div>
     </div>
   </section>
 
