@@ -23,7 +23,6 @@ const developerSchema = new Schema(
 
     apiKey: {
       type: String,
-      unique: true,
       index: true,
     },
 
