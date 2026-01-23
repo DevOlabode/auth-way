@@ -28,24 +28,6 @@ module.exports.storeReturnTo = (req, res, next)=>{
 };
 
 
-module.exports.requireAPIKey = async (req, res, next) => {
-  const apiKey = req.header('X-voult.dev-App-Key');
-
-  if (!apiKey) {
-    return res.status(401).json({ error: 'API key required' });
-  }
-
-  const key = await ApiKey.findOne({ key }).populate('app');
-
-  if (!key || !key.app.isActive) {
-    return res.status(403).json({ error: 'Invalid API key' });
-  }
-
-  req.appClient = key.app;
-  next();
-};
-
-
 // HOW FUTURE APPS WILL USE voult.dev.
 /*
 fetch('https://voult.dev/api/auth/login', {
