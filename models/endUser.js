@@ -105,6 +105,4 @@ EndUserSchema.methods.generatePasswordResetToken = function () {
   return rawToken;
 };
 
-
-
 module.exports = mongoose.models.EndUser || mongoose.model('EndUser', EndUserSchema);
