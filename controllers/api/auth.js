@@ -9,6 +9,11 @@ const crypto = require('crypto');
 const {verifyEndUsers, sendPasswordResetEmail} = require('../../services/emailService');
 
 
+// TOKENS
+const RefreshToken = require('../../models/refreshToken');
+const { signAccessToken, signRefreshToken } = require('../../utils/jwt');
+
+
 // PASSWORDS RULES
 const { validatePassword } = require('../../validators/password');
 const { PASSWORD_RULES_MESSAGE } = require('../../constants/passwordRules');
@@ -146,17 +151,102 @@ module.exports.login = async (req, res) => {
 
   await user.save();
 
-  const token = signEndUserToken(user, app);
+  const accessToken = signAccessToken(user, app);
+  const refreshToken = signRefreshToken();
+
+  const refreshTokenHash = crypto
+    .createHash('sha256')
+    .update(refreshToken)
+    .digest('hex');
+
+  await RefreshToken.create({
+    endUser: user._id,
+    app: app._id,
+    tokenHash: refreshTokenHash,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+  });
+
 
   res.json({
     message: 'Login successful',
-    token,
+    accessToken,
+    refreshToken, 
     user: {
       id: user._id,
       email: user.email
     }
   });
 };
+
+module.exports.refresh = async (req, res) => {
+  const { refreshToken } = req.body;
+  const app = req.appClient;
+
+  if (!refreshToken) {
+    throw new ApiError(
+      400,
+      'VALIDATION_ERROR',
+      'Refresh token is required'
+    );
+  }
+
+  const tokenHash = crypto
+    .createHash('sha256')
+    .update(refreshToken)
+    .digest('hex');
+
+  const storedToken = await RefreshToken.findOne({
+    tokenHash,
+    app: app._id,
+    revokedAt: null,
+    expiresAt: { $gt: Date.now() }
+  });
+
+  if (!storedToken) {
+    throw new ApiError(
+      401,
+      'INVALID_REFRESH_TOKEN',
+      'Refresh token is invalid or expired'
+    );
+  }
+
+  const user = await EndUser.findById(storedToken.user);
+
+  if (!user || !user.isActive) {
+    throw new ApiError(
+      401,
+      'UNAUTHORIZED',
+      'User no longer active'
+    );
+  }
+
+  /** ROTATION **/
+  storedToken.revokedAt = new Date();
+
+  const newRefreshToken = signRefreshToken();
+  const newRefreshTokenHash = crypto
+    .createHash('sha256')
+    .update(newRefreshToken)
+    .digest('hex');
+
+  storedToken.replacedByToken = newRefreshTokenHash;
+  await storedToken.save();
+
+  await RefreshToken.create({
+    user: user._id,
+    app: app._id,
+    tokenHash: newRefreshTokenHash,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  });
+
+  const accessToken = signAccessToken(user, app);
+
+  res.status(200).json({
+    accessToken,
+    refreshToken: newRefreshToken
+  });
+};
+
 
 
 // =======================
@@ -203,6 +293,13 @@ module.exports.logout = async (req, res) => {
   }
 
   req.endUser.tokenVersion += 1;
+
+  
+  await RefreshToken.updateMany(
+    { user: req.endUser._id, app: req.appClient._id },
+    { revokedAt: new Date() }
+  );
+
   await req.endUser.save();
 
   res.status(200).json({

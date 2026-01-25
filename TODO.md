@@ -64,7 +64,7 @@ A centralized authentication-as-a-service platform for developers.
 ## 🚀 V1 – NEXT MAJOR RELEASE
 
 ### 🔐 Authentication & Sessions
-- [ ] Refresh token support (short-lived access tokens)
+- [x] Refresh token support (short-lived access tokens)
 - [ ] Refresh token rotation + reuse detection
 - [ ] Session tracking (list active sessions)
 - [ ] Revoke specific sessions

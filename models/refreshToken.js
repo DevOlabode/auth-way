@@ -3,16 +3,16 @@ const crypto = require('crypto');
 
 const refreshTokenSchema = new mongoose.Schema(
   {
-    user: {
+    endUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'EndUser',
       required: true,
       index: true,
     },
 
-    client: {
+    app: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Client',
+      ref: 'App',
       required: true,
       index: true,
     },
@@ -21,6 +21,7 @@ const refreshTokenSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      index: true,
     },
 
     expiresAt: {
@@ -34,7 +35,7 @@ const refreshTokenSchema = new mongoose.Schema(
       default: null,
     },
 
-    replacedByToken: {
+    replacedByTokenHash: {
       type: String,
       default: null,
     },
@@ -48,7 +49,7 @@ const refreshTokenSchema = new mongoose.Schema(
 );
 
 /**
- * Auto-delete expired tokens
+ * Auto-delete expired refresh tokens
  */
 refreshTokenSchema.index(
   { expiresAt: 1 },
@@ -56,13 +57,17 @@ refreshTokenSchema.index(
 );
 
 /**
- * Utility: hash token before saving
+ * Hash refresh token before storing
  */
 refreshTokenSchema.statics.hashToken = (token) => {
   return crypto
     .createHash('sha256')
     .update(token)
     .digest('hex');
+};
+
+refreshTokenSchema.methods.isActive = function () {
+  return !this.revokedAt && this.expiresAt > new Date();
 };
 
 module.exports = mongoose.model('RefreshToken', refreshTokenSchema);

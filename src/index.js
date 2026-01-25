@@ -1,5 +1,12 @@
 require('dotenv').config();
 
+['ENDUSER_JWT_SECRET'].forEach((key) => {
+  if (!process.env[key]) {
+    throw new Error(`${key} is missing`);
+  }
+});
+
+
 const express = require('express');
 const app = express();
 
