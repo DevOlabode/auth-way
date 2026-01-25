@@ -50,6 +50,6 @@ router.post('/disable', verifyEndUserJWT, requireEndUserAuth, catchAsync(authCon
 
 router.post('/reenable', requireEndUserAuth, catchAsync(authController.reenableAccount));
 
-router.get('/refresh', catchAsync(authController.refresh));
+router.get('/refresh', catchAsync(authController.refresh));                                               
 
 module.exports = router;

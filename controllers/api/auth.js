@@ -299,10 +299,7 @@ module.exports.logout = async (req, res) => {
       'Authentication required'
     );
   }
-
-  console.log("End User: ", req.endUser);
-  console.log( "App Client: ", req.appClient);
-
+  
   // Revoke ALL refresh tokens for this user + app
   await RefreshToken.updateMany(
     {
