@@ -12,11 +12,13 @@ const {verifyEndUsers, sendPasswordResetEmail} = require('../../services/emailSe
 // TOKENS
 const RefreshToken = require('../../models/refreshToken');
 const { signAccessToken, signRefreshToken } = require('../../utils/jwt');
+const { createRefreshToken } = require('../../utils/refreshToken')
 
 
 // PASSWORDS RULES
 const { validatePassword } = require('../../validators/password');
 const { PASSWORD_RULES_MESSAGE } = require('../../constants/passwordRules');
+const endUser = require('../../models/endUser');
 
 
 // =======================
@@ -113,7 +115,7 @@ module.exports.login = async (req, res) => {
   const user = await EndUser.findOne({
     app: app._id,
     email,
-    deletedAt: null
+    deletedAt: null,
   }).select('+passwordHash');
 
   if (!user) {
@@ -131,7 +133,7 @@ module.exports.login = async (req, res) => {
       'INVALID_CREDENTIALS',
       'Invalid email or password'
     );
-  };
+  }
 
   if (!user.isEmailVerified) {
     throw new ApiError(
@@ -140,110 +142,116 @@ module.exports.login = async (req, res) => {
       'Please verify your email before logging in'
     );
   }
-  
 
+  if (!user.isActive) {
+    throw new ApiError(
+      403,
+      'ACCOUNT_DISABLED',
+      'Account is disabled'
+    );
+  }
+
+  // Update login metadata
   user.lastLoginAt = new Date();
-
-  const appO = await App.findById(app._id);
-  appO.usage.totalLogins += 1;
-
-  await appO.save();
-
   await user.save();
 
+  // App usage tracking
+  const appO = await App.findById(app._id);
+  appO.usage.totalLogins += 1;
+  await appO.save();
+
+  // 🎟 Issue tokens
   const accessToken = signAccessToken(user, app);
-  const refreshToken = signRefreshToken();
 
-  const refreshTokenHash = crypto
-    .createHash('sha256')
-    .update(refreshToken)
-    .digest('hex');
-
-  await RefreshToken.create({
-    endUser: user._id,
-    app: app._id,
-    tokenHash: refreshTokenHash,
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+  const { rawToken: refreshToken } = await createRefreshToken({
+    endUser: user,
+    app,
+    ipAddress: req.ip,
+    userAgent: req.headers['user-agent'],
   });
 
-
-  res.json({
+  res.status(200).json({
     message: 'Login successful',
     accessToken,
-    refreshToken, 
+    refreshToken,
     user: {
       id: user._id,
-      email: user.email
-    }
+      email: user.email,
+    },
   });
 };
+
 
 module.exports.refresh = async (req, res) => {
   const { refreshToken } = req.body;
   const app = req.appClient;
 
   if (!refreshToken) {
-    throw new ApiError(
-      400,
-      'VALIDATION_ERROR',
-      'Refresh token is required'
-    );
+    throw new ApiError(400, 'VALIDATION_ERROR', 'Refresh token required');
   }
 
-  const tokenHash = crypto
-    .createHash('sha256')
-    .update(refreshToken)
-    .digest('hex');
+  const tokenHash = RefreshToken.hashToken(refreshToken);
 
   const storedToken = await RefreshToken.findOne({
     tokenHash,
-    app: app._id,
-    revokedAt: null,
-    expiresAt: { $gt: Date.now() }
-  });
+  }).populate('endUser');
 
+  // ❌ Token not found
   if (!storedToken) {
+    throw new ApiError(401, 'INVALID_REFRESH_TOKEN', 'Invalid refresh token');
+  }
+
+  // 🚨 REUSE DETECTION
+  if (storedToken.revokedAt) {
+    // Someone reused an already-rotated token
+    await RefreshToken.updateMany(
+      {
+        endUser: storedToken.endUser._id,
+        app: storedToken.app,
+        revokedAt: null,
+      },
+      { revokedAt: new Date() }
+    );
+
     throw new ApiError(
       401,
-      'INVALID_REFRESH_TOKEN',
-      'Refresh token is invalid or expired'
+      'REFRESH_TOKEN_REUSE_DETECTED',
+      'Session compromised. Please log in again.'
     );
   }
 
-  const user = await EndUser.findById(storedToken.user);
-
-  if (!user || !user.isActive) {
+  // ❌ Expired
+  if (storedToken.expiresAt < new Date()) {
     throw new ApiError(
       401,
-      'UNAUTHORIZED',
-      'User no longer active'
+      'REFRESH_TOKEN_EXPIRED',
+      'Refresh token expired'
     );
   }
 
-  /** ROTATION **/
+  // 🔄 ROTATION
   storedToken.revokedAt = new Date();
 
-  const newRefreshToken = signRefreshToken();
-  const newRefreshTokenHash = crypto
-    .createHash('sha256')
-    .update(newRefreshToken)
-    .digest('hex');
-
-  storedToken.replacedByToken = newRefreshTokenHash;
-  await storedToken.save();
-
-  await RefreshToken.create({
-    user: user._id,
-    app: app._id,
-    tokenHash: newRefreshTokenHash,
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  const { rawToken: newRefreshToken } = await createRefreshToken({
+    endUser: storedToken.endUser,
+    app,
+    ipAddress: req.ip,
+    userAgent: req.headers['user-agent'],
   });
 
-  const accessToken = signAccessToken(user, app);
+  storedToken.replacedByTokenHash =
+    RefreshToken.hashToken(newRefreshToken);
 
-  res.status(200).json({
+  await storedToken.save();
+
+  const accessToken = signAccessToken(
+    storedToken.endUser,
+    app
+  );
+
+  res.json({
     accessToken,
-    refreshToken: newRefreshToken
+    refreshToken: newRefreshToken,
   });
 };
 
@@ -292,20 +300,30 @@ module.exports.logout = async (req, res) => {
     );
   }
 
-  req.endUser.tokenVersion += 1;
+  console.log("End User: ", req.endUser);
+  console.log( "App Client: ", req.appClient);
 
-  
+  // Revoke ALL refresh tokens for this user + app
   await RefreshToken.updateMany(
-    { user: req.endUser._id, app: req.appClient._id },
-    { revokedAt: new Date() }
+    {
+      endUser: req.endUser._id,
+      app: req.appClient._id,
+      revokedAt: null,
+    },
+    {
+      revokedAt: new Date(),
+    }
   );
 
+  // Optional hard logout (kills any still-valid access tokens)
+  req.endUser.tokenVersion += 1;
   await req.endUser.save();
 
   res.status(200).json({
-    message: 'Logged out successfully'
+    message: 'Logged out successfully',
   });
 };
+
 
 // verify Email.
 module.exports.verifyEmail = async (req, res) => {

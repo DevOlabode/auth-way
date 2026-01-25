@@ -42,12 +42,14 @@ router.post('/forgot-password', verifyClient, catchAsync(authController.forgotPa
 
 router.post('/reset-password', verifyClient, catchAsync(authController.resetPassword));
 
-router.post('/logout', requireEndUserAuth, catchAsync(authController.logout));
+router.post('/logout', requireEndUserAuth, verifyClient, catchAsync(authController.logout));
 
 router.get('/verify-email', catchAsync(authController.verifyEmail));
 
 router.post('/disable', verifyEndUserJWT, requireEndUserAuth, catchAsync(authController.disableAccount));
 
 router.post('/reenable', requireEndUserAuth, catchAsync(authController.reenableAccount));
+
+router.get('/refresh', catchAsync(authController.refresh));
 
 module.exports = router;

@@ -65,7 +65,7 @@ A centralized authentication-as-a-service platform for developers.
 
 ### 🔐 Authentication & Sessions
 - [x] Refresh token support (short-lived access tokens)
-- [ ] Refresh token rotation + reuse detection
+- [x] Refresh token rotation + reuse detection
 - [ ] Session tracking (list active sessions)
 - [ ] Revoke specific sessions
 - [ ] Account lockout after repeated failed logins
