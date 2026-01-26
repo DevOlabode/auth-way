@@ -260,38 +260,6 @@ module.exports.refresh = async (req, res) => {
 };
 
 
-
-// =======================
-// ME
-// =======================
-module.exports.me = async (req, res) => {
-  const user = await req.endUser.populate('app');
-
-  if (!req.endUser) {
-    throw new ApiError(
-      401,
-      'UNAUTHORIZED',
-      'Authentication required'
-    );
-  }
-
-  if (!user.isEmailVerified) {
-    throw new ApiError(
-      403,
-      'EMAIL_NOT_VERIFIED',
-      'Please verify your email before logging in'
-    );
-  }
-  
-  res.status(200).json({
-    id: user._id,
-    email: user.email,
-    createdAt: user.createdAt,
-    app: user.app
-  });
-};
-
-
 // =======================
 // LOGOUT
 // =======================

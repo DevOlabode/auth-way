@@ -69,7 +69,6 @@ A centralized authentication-as-a-service platform for developers.
 - [x] Session tracking (list active sessions)
 - [x] Revoke specific sessions
 - [ ] Account lockout after repeated failed logins
-- [ ] Optional MFA (email OTP)
 
 ---
 
@@ -116,6 +115,9 @@ A centralized authentication-as-a-service platform for developers.
 ---
 
 ## 🌱 V2 / FUTURE IDEAS
+
+### BASIC MULTI FACTOR AUTHENTICATION
+- [ ] Optional MFA (email OTP)
 
 ### 🏢 Enterprise Features
 - [ ] Organizations / Teams
