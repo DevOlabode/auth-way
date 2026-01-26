@@ -132,18 +132,20 @@ module.exports.login = async (req, res) => {
 
   const isValid = await user.verifyPassword(password);
 
-  // ❌ Wrong password
+  //  Wrong password
   if (!isValid) {
     user.failedLoginAttempts += 1;
 
     if (user.failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
       user.lockUntil = new Date(Date.now() + LOCK_TIME);
+      console.log("App Name: ",app.name);
 
-      // 📧 Send lock email ONCE
+      //  Send lock email ONCE
       try{
       await accountLockedEmail(
         user.email,
         user.email,
+        app.name,
         user.lockUntil,
         'https://voult.dev/support'
       );

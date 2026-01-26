@@ -3,6 +3,7 @@ const {transporter} = require('../config/mailer');
 module.exports.accountLockedEmail = async (
     to,
     name,
+    appName,
     unlockTime,
     supportUrl
   ) => {
@@ -23,7 +24,7 @@ module.exports.accountLockedEmail = async (
             </p>
   
             <p style="font-size: 16px; color: #374151; line-height: 1.6;">
-              We detected multiple unsuccessful login attempts on your voult.dev account.
+              We detected multiple unsuccessful login attempts on your ${appName}  account.
               To keep your account secure, we’ve temporarily locked it.
             </p>
   
