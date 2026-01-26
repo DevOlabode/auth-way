@@ -19,7 +19,7 @@ router.use('/app', webAppRoutes);
 // Mount API Routes
 router.use('/api/auth', apiAuthRoutes);
 router.use('/api/sessions', sessionRoutes);
-router.use('/api/users', apiUserRoutes);
+router.use('/api/user', apiUserRoutes);
 // router.use('/api/health', healthRoutes);
 
 router.use(require('../middleware/apiErrorHandler'));
