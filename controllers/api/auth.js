@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 // EMAILS
 const {verifyEndUsers, sendPasswordResetEmail} = require('../../services/emailService');
-
+// const accountLockedEmail = require('../../services/emailOnLock');
 
 // TOKENS
 const RefreshToken = require('../../models/refreshToken');
@@ -95,8 +95,10 @@ module.exports.register = async (req, res) => {
 };
 
 
+const { accountLockedEmail } = require('../../services/emailOnLock');
+
 const MAX_FAILED_ATTEMPTS = 5;
-const LOCK_TIME = 15 * 60 * 1000; // 15 minutes
+const LOCK_TIME = 15 * 60 * 1000;
 
 // =======================
 // LOGIN
@@ -106,28 +108,20 @@ module.exports.login = async (req, res) => {
   const app = req.appClient;
 
   if (!email || !password) {
-    throw new ApiError(
-      400,
-      'VALIDATION_ERROR',
-      'Email and password are required'
-    );
+    throw new ApiError(400, 'VALIDATION_ERROR', 'Email and password are required');
   }
 
   const user = await EndUser.findOne({
     app: app._id,
     email,
-    deletedAt: null,
+    deletedAt: null
   }).select('+passwordHash');
 
   if (!user) {
-    throw new ApiError(
-      401,
-      'INVALID_CREDENTIALS',
-      'Invalid email or password'
-    );
+    throw new ApiError(401, 'INVALID_CREDENTIALS', 'Invalid email or password');
   }
 
-  //  Account lock check
+  // 🔒 Account locked
   if (user.lockUntil && user.lockUntil > Date.now()) {
     throw new ApiError(
       423,
@@ -138,61 +132,52 @@ module.exports.login = async (req, res) => {
 
   const isValid = await user.verifyPassword(password);
 
-  //  Invalid password
+  // ❌ Wrong password
   if (!isValid) {
     user.failedLoginAttempts += 1;
 
-    // Lock account if max attempts reached
     if (user.failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
       user.lockUntil = new Date(Date.now() + LOCK_TIME);
+
+      // 📧 Send lock email ONCE
+      await accountLockedEmail(
+        user.email,
+        user.email,
+        user.lockUntil,
+        'https://voult.dev/support'
+      );
     }
 
     await user.save();
 
-    throw new ApiError(
-      401,
-      'INVALID_CREDENTIALS',
-      'Invalid email or password'
-    );
+    throw new ApiError(401, 'INVALID_CREDENTIALS', 'Invalid email or password');
   }
 
-  // ✅ Successful login → reset lock state
+  // ✅ Success → reset lock state
   user.failedLoginAttempts = 0;
   user.lockUntil = null;
 
   if (!user.isEmailVerified) {
-    throw new ApiError(
-      403,
-      'EMAIL_NOT_VERIFIED',
-      'Please verify your email before logging in'
-    );
+    throw new ApiError(403, 'EMAIL_NOT_VERIFIED', 'Please verify your email');
   }
 
   if (!user.isActive) {
-    throw new ApiError(
-      403,
-      'ACCOUNT_DISABLED',
-      'Account is disabled'
-    );
+    throw new ApiError(403, 'ACCOUNT_DISABLED', 'Account is disabled');
   }
 
-  // Update login metadata
   user.lastLoginAt = new Date();
   await user.save();
 
-  // App usage tracking
   const appO = await App.findById(app._id);
   appO.usage.totalLogins += 1;
   await appO.save();
 
-  // Issue tokens
   const accessToken = signAccessToken(user, app);
-
   const { rawToken: refreshToken } = await createRefreshToken({
     endUser: user,
     app,
     ipAddress: req.ip,
-    userAgent: req.headers['user-agent'],
+    userAgent: req.headers['user-agent']
   });
 
   res.status(200).json({
@@ -201,10 +186,11 @@ module.exports.login = async (req, res) => {
     refreshToken,
     user: {
       id: user._id,
-      email: user.email,
-    },
+      email: user.email
+    }
   });
 };
+
 
 // =======================
 // LOGOUT
@@ -236,5 +222,5 @@ module.exports.logout = async (req, res) => {
 
   res.status(200).json({
     message: 'Logged out successfully',
-  });
-};
+  })
+}  
