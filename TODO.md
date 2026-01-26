@@ -69,7 +69,7 @@ A centralized authentication-as-a-service platform for developers.
 - [x] Session tracking (list active sessions)
 - [x] Revoke specific sessions
 - [x] Account lockout after repeated failed logins
-- [ ] Send Email to the endUser about the lockout
+- [x] Send Email to the endUser about the lockout
 
 ---
 
@@ -133,6 +133,7 @@ A centralized authentication-as-a-service platform for developers.
 - [ ] Billing & plans
 - [ ] Usage-based limits
 - [ ] Custom branding (emails, hosted pages)
+- [ ] Add the support page to the codebase
 
 ---
 

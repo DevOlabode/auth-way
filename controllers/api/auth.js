@@ -140,12 +140,16 @@ module.exports.login = async (req, res) => {
       user.lockUntil = new Date(Date.now() + LOCK_TIME);
 
       // 📧 Send lock email ONCE
+      try{
       await accountLockedEmail(
         user.email,
         user.email,
         user.lockUntil,
         'https://voult.dev/support'
       );
+    } catch(err){
+      console.error('Account Lock Email Failed: ', err.message);
+    }
     }
 
     await user.save();
