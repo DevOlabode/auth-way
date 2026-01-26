@@ -82,8 +82,6 @@ A centralized authentication-as-a-service platform for developers.
 - [ ] Store provider metadata (providerId, avatar, profile)
 - [ ] Per-app enable / disable social providers
 
----
-
 ### 🧩 OAuth Provider Configuration
 - [ ] Configure OAuth credentials per app
   - [ ] Google Client ID & Secret

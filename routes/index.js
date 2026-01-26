@@ -9,6 +9,7 @@ const webAppRoutes = require('./web/app');
 // API Routes
 const apiAuthRoutes = require('./api/auth');
 const sessionRoutes = require('./api/session');
+const apiUserRoutes = require('./api/user');
 
 // Mount Web Routes
 router.use('/', webAuthRoutes);
@@ -18,7 +19,7 @@ router.use('/app', webAppRoutes);
 // Mount API Routes
 router.use('/api/auth', apiAuthRoutes);
 router.use('/api/sessions', sessionRoutes);
-// router.use('/api/users', apiUserRoutes);
+router.use('/api/users', apiUserRoutes);
 // router.use('/api/health', healthRoutes);
 
 router.use(require('../middleware/apiErrorHandler'));
