@@ -260,3 +260,54 @@ module.exports.verifyEmail = async (req, res) => {
     }
   };
   
+// =======================
+// UPDATE PROFILE
+// =======================
+module.exports.updateProfile = async (req, res) => {
+  const user = req.endUser;
+  const app = req.appClient;
+
+  if (!user) {
+    throw new ApiError(
+      401,
+      'UNAUTHORIZED',
+      'Authentication required'
+    );
+  }
+
+  const { fullName } = req.body;
+
+  // Require at least one editable field
+  if (!fullName) {
+    throw new ApiError(
+      400,
+      'VALIDATION_ERROR',
+      'fullName is required'
+    );
+  }
+
+  // No-op protection
+  if (fullName === user.fullName) {
+    throw new ApiError(
+      400,
+      'NO_CHANGES_DETECTED',
+      'New fullName must be different from current value'
+    );
+  }
+
+  user.fullName = fullName;
+  user.updatedAt = new Date();
+
+  await user.save();
+
+  res.status(200).json({
+    message: 'Profile updated successfully',
+    user: {
+      id: user._id,
+      email: user.email,
+      fullName: user.fullName,
+      authProvider: user.authProvider,
+      updatedAt: user.updatedAt,
+    },
+  });
+};

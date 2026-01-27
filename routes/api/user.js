@@ -36,4 +36,6 @@ router.post('/disable', verifyEndUserJWT, requireEndUserAuth, catchAsync(control
 
 router.post('/reenable', requireEndUserAuth, catchAsync(controller.reenableAccount));
 
+router.patch('/me', verifyEndUserJWT, catchAsync(controller.updateProfile));
+
 module.exports = router;

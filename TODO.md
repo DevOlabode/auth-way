@@ -74,7 +74,7 @@ A centralized authentication-as-a-service platform for developers.
 ---
 
 ### BASIC FEATURES FOR THE API.
-- [] Edit Profile (extra authentication for the email)
+- [x] Edit Profile (extra authentication for the email)
 
 ### 🌐 Social & OAuth Login
 - [ ] Login with Google
