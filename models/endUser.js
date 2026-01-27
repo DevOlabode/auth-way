@@ -41,6 +41,16 @@ const EndUserSchema = new Schema(
       select: false
     },
 
+    googleId: {
+      type: String,
+      index: true
+    },
+    
+    authProvider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local'
+    }, 
     isEmailVerified: {
       type: Boolean,
       default: false

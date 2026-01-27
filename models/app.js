@@ -35,6 +35,12 @@ const AppSchema = new mongoose.Schema({
     totalLogins: { type: Number, default: 0 }
   },
 
+  googleOAuth: {
+    clientId: String,
+    clientSecret: String,
+    redirectUri: String
+  },
+
   clientSecretHash: {
     type: String,
     select: false
