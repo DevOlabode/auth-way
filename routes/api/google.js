@@ -3,8 +3,10 @@ const router = express.Router();
 
 const controller = require('../../controllers/api/google');
 
-router.get('/register', controller.googleRegister);
+const requireEndUserAuth = require('../../middleware/requireEndUserAuth');
 
-router.post('/login', controller.googleLogin);
+router.get('/register', requireEndUserAuth, controller.googleRegister);
+
+router.post('/login', requireEndUserAuth, controller.googleLogin);
 
 module.exports = router;

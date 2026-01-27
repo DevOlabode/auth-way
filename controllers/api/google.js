@@ -2,6 +2,12 @@ const {
     exchangeCodeForToken,
     getGoogleProfile
   } = require('../../utils/googleOAuth');
+
+
+  const { createRefreshToken } = require('../../utils/refreshToken');
+  const { signAccessToken } = require('../../utils/jwt');
+
+  const {ApiError}  = require('../../utils/apiError');
   
   module.exports.googleLogin = async (req, res) => {
     const { code } = req.body;
@@ -44,16 +50,17 @@ const {
         user.isEmailVerified = true;
         await user.save();
       }
-    } else {
-      // 🆕 New user
-      user = await EndUser.create({
-        app: app._id,
-        email,
-        googleId,
-        authProvider: 'google',
-        isEmailVerified: true
-      });
-    }
+    } 
+    // else {
+    //   // 🆕 New user
+    //   user = await EndUser.create({
+    //     app: app._id,
+    //     email,
+    //     googleId,
+    //     authProvider: 'google',
+    //     isEmailVerified: true
+    //   });
+    // }
   
     if (!user.isActive) {
       throw new ApiError(403, 'ACCOUNT_DISABLED', 'Account is disabled');
