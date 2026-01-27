@@ -238,7 +238,7 @@ module.exports.verifyEmail = async (req, res) => {
         id: user._id,
         email: user.email,
         app : user.app,
-        name: user.name,
+        name: user.fullName,
         isEmailVerified: user.isEmailVerified,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,

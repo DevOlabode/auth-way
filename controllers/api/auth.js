@@ -24,10 +24,6 @@ const { PASSWORD_RULES_MESSAGE } = require('../../constants/passwordRules');
 // =======================
 module.exports.register = async (req, res) => {
   const { email, password, fullName } = req.body;
-  console.log("Full Name: ", fullName);
-  console.log("Email: ", email);
-
-  console.log("Entire Body", req.body)
 
   const app = req.appClient;
 
@@ -62,7 +58,7 @@ module.exports.register = async (req, res) => {
   
 
   const user = new EndUser({
-    fullName : req.body.fullName,
+    fullName,
     app: app._id,
     email
   });
