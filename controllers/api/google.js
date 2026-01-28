@@ -86,15 +86,17 @@ module.exports.googleLogin = async (req, res) => {
 };
 
 module.exports.googleRegister = async (req, res) => {
+  const { code } = req.body;
   const app = req.appClient;
-  console.log('App Client:', app);
 
-  /* ---------------------- Validation ---------------------- */
+  if (!code) {
+    throw new ApiError(400, 'VALIDATION_ERROR', 'Authorization code is required');
+  }
 
   if (
     !app.googleOAuth ||
     !app.googleOAuth.clientId ||
-    // !app.googleOAuth.clientSecret ||
+    !app.googleOAuth.clientSecret ||
     !app.googleOAuth.redirectUri
   ) {
     throw new ApiError(
@@ -104,31 +106,24 @@ module.exports.googleRegister = async (req, res) => {
     );
   }
 
-  /* ------------------- OAuth Verification ------------------ */
+  /* -------- Exchange code → Google access token -------- */
   const googleAccessToken = await exchangeCodeForToken(
+    code,
     app.googleOAuth.clientId,
     app.googleOAuth.clientSecret,
     app.googleOAuth.redirectUri
   );
-  
+
+  /* -------- Fetch Google profile -------- */
   const profile = await getGoogleProfile(googleAccessToken);
 
-  const {
-    id: googleId,
-    email,
-    verified_email,
-    name
-  } = profile;
+  const { id: googleId, email, verified_email, name } = profile;
 
   if (!verified_email) {
-    throw new ApiError(
-      403,
-      'EMAIL_NOT_VERIFIED',
-      'Google email is not verified'
-    );
+    throw new ApiError(403, 'EMAIL_NOT_VERIFIED', 'Google email is not verified');
   }
 
-  /* ------------------ Prevent duplicates ------------------ */
+  /* -------- Prevent duplicates -------- */
   const existingUser = await EndUser.findOne({
     app: app._id,
     email,
@@ -143,11 +138,11 @@ module.exports.googleRegister = async (req, res) => {
     );
   }
 
-  /* ------------------ Create new user ------------------ */
+  /* -------- Create user -------- */
   const user = await EndUser.create({
     app: app._id,
     email,
-    fullName: name,           // IMPORTANT: your schema requires fullName
+    fullName: name,
     googleId,
     authProvider: 'google',
     isEmailVerified: true,
@@ -155,13 +150,12 @@ module.exports.googleRegister = async (req, res) => {
     lastLoginAt: new Date()
   });
 
-  /* ------------------ App usage tracking ------------------ */
   await App.updateOne(
     { _id: app._id },
     { $inc: { 'usage.totalRegistrations': 1 } }
   );
 
-  /* ------------------ Issue tokens ------------------ */
+  /* -------- Issue tokens -------- */
   const accessToken = signAccessToken(user, app);
 
   const { rawToken: refreshToken } = await createRefreshToken({
@@ -171,7 +165,6 @@ module.exports.googleRegister = async (req, res) => {
     userAgent: req.headers['user-agent']
   });
 
-  /* ------------------ Response ------------------ */
   res.status(201).json({
     message: 'Google registration successful',
     accessToken,
