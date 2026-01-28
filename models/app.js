@@ -50,6 +50,24 @@ googleOAuth: {
   redirectUri: {
     type: String,
   },
+
+  githubOAuth: {
+    enabled: { 
+      type: Boolean, 
+      default: false 
+    },
+    clientId: { 
+      type: String 
+    },
+    clientSecret: { 
+      type: String, 
+      select: false 
+    },
+    redirectUri: { 
+      type: String 
+    }
+  }
+  
 },
 
 

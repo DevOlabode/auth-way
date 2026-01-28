@@ -44,11 +44,17 @@ const EndUserSchema = new Schema(
       type: String,
       index: true
     },
+
+    githubId: {
+      type: String,
+      index: true
+    },
     
     authProvider: {
       type: String,
-      enum: ['local', 'google'],
-      default: 'local'
+      enum: ['local', 'google', 'github'],
+      default: 'local',
+      required : true
     }, 
     isEmailVerified: {
       type: Boolean,
