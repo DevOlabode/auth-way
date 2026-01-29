@@ -6,7 +6,7 @@ const router = express.Router();
 const { apiLimiter } = require('../../middleware/rateLimiters');
 
 
-const { verifyClient } = require('../../middleware/verifyClient');
+const { verifyClient, verifyClientIdOnly } = require('../../middleware/verifyClient');
 const authController = require('../../controllers/api/auth');
 
 const { verifyEndUserJWT } = require('../../middleware/verifyEndUserJWT');
@@ -30,9 +30,9 @@ router.use(apiLimiter);
   Authorization: Bearer client_secret
 */
 
-router.post('/register', validate(schemas.registerSchema), verifyClient, validateCallbackUrl, authLimiter, catchAsync(authController.register));
+router.post('/register', validate(schemas.registerSchema), verifyClientIdOnly, validateCallbackUrl, authLimiter, catchAsync(authController.register));
 
-router.post('/login', validate(schemas.loginSchema), verifyClient, authLimiter, validateCallbackUrl, catchAsync(authController.login));
+router.post('/login', validate(schemas.loginSchema), verifyClientIdOnly, authLimiter, validateCallbackUrl, catchAsync(authController.login));
 
 router.get('/verify-email', catchAsync(authController.verifyEmail));
 
