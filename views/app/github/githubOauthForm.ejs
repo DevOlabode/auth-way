@@ -1,70 +1,100 @@
 <% layout('layout/boilerplate.ejs') %>
 
-<section class="card">
-  <h2 class="text-white">GitHub OAuth Configuration</h2>
-
-  <form
-    action="/app/<%= app._id %>/github-oauth"
-    method="POST"
-    class="card app-form"
-  >
-
-    <!-- Enable GitHub OAuth -->
-    <!-- <div class="form-group">
-      <label class="text-light opacity-75">
+<% if(!app.githubOAuth.enabled){ %>
+  <section class="card">
+    <h2 class="text-white">GitHub OAuth Configuration</h2>
+  
+    <form
+      action="/app/<%= app._id %>/github-oauth"
+      method="POST"
+      class="card app-form"
+    >
+      <!-- Client ID -->
+      <div class="form-group">
+        <label class="text-light opacity-50">GitHub Client ID</label>
         <input
-          type="checkbox"
-          name="enabled"
-          value="true"
-          <%= app.githubOAuth?.enabled ? 'checked' : '' %>
+          type="text"
+          name="clientId"
+          required
+          value="<%= app.githubOAuth?.clientId || '' %>"
+          placeholder="Iv1.0123456789abcdef"
         />
-        Enable GitHub Login
-      </label>
-    </div> -->
-
-    <!-- Client ID -->
-    <div class="form-group">
-      <label class="text-light opacity-50">GitHub Client ID</label>
-      <input
-        type="text"
-        name="clientId"
-        required
-        value="<%= app.githubOAuth?.clientId || '' %>"
-        placeholder="Iv1.0123456789abcdef"
-      />
-    </div>
-
-    <!-- Client Secret -->
-    <div class="form-group">
-      <label class="text-light opacity-50">GitHub Client Secret</label>
-      <input
-        type="password"
-        name="clientSecret"
-        placeholder="Leave blank to keep existing secret"
-      />
-    </div>
-
-    <!-- Redirect URI -->
-    <div class="form-group">
-      <label class="text-light opacity-50">Authorization Callback URL</label>
-      <input
-        type="url"
-        name="redirectUri"
-        required
-        value="<%= app.githubOAuth?.redirectUri || '' %>"
-        placeholder="https://yourapi.com/auth/github/callback"
-      />
-    </div>
-
-    <div class="form-actions">
-      <button class="btn btn-secondary">
-        Save GitHub OAuth
-      </button>
-    </div>
-  </form>
-
-  <p class="hint">
-    The callback URL must exactly match the one configured in your
-    GitHub OAuth App settings.
-  </p>
-</section>
+      </div>
+  
+      <!-- Client Secret -->
+      <div class="form-group">
+        <label class="text-light opacity-50">GitHub Client Secret</label>
+        <input
+          type="password"
+          name="clientSecret"
+          placeholder="Leave blank to keep existing secret"
+        />
+      </div>
+  
+      <!-- Redirect URI -->
+      <div class="form-group">
+        <label class="text-light opacity-50">Authorization Callback URL</label>
+        <input
+          type="url"
+          name="redirectUri"
+          required
+          value="<%= app.githubOAuth?.redirectUri || '' %>"
+          placeholder="https://yourapi.com/auth/github/callback"
+        />
+      </div>
+  
+      <div class="form-actions">
+        <button class="btn btn-secondary">
+          Save GitHub OAuth
+        </button>
+      </div>
+    </form>
+  
+    <p class="hint">
+      The callback URL must exactly match the one configured in your
+      GitHub OAuth App settings.
+    </p>
+  </section>
+  
+  <% }else{ %>
+    <section class="card">
+      <h2 class="text-white">Update GitHub OAuth</h2>
+    
+      <form action="/app/<%= app._id %>/github-oauth" method="POST" class="card app-form">
+    
+        <input type="hidden" name="enabled" value="true" />
+    
+        <div class="form-group">
+          <label>GitHub Client ID</label>
+          <input
+            type="text"
+            name="clientId"
+            value="<%= app.githubOAuth?.clientId || '' %>"
+            required
+          />
+        </div>
+    
+        <div class="form-group">
+          <label>GitHub Client Secret</label>
+          <input
+            type="password"
+            name="clientSecret"
+            placeholder="••••••••••••"
+          />
+          <small>Leave empty to keep existing secret</small>
+        </div>
+    
+        <div class="form-group">
+          <label>Redirect URI</label>
+          <input
+            type="url"
+            name="redirectUri"
+            value="<%= app.githubOAuth?.redirectUri || '' %>"
+            required
+          />
+        </div>
+    
+        <button class="btn btn-secondary">Save GitHub OAuth</button>
+      </form>
+    </section>    
+    <% } %>

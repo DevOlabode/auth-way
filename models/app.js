@@ -51,7 +51,8 @@ googleOAuth: {
     type: String,
   },
 
-  githubOAuth: {
+},
+githubOAuth: {
     enabled: { 
       type: Boolean, 
       default: false 
@@ -66,10 +67,7 @@ googleOAuth: {
     redirectUri: { 
       type: String 
     }
-  }
-  
 },
-
 
   deletedAt: Date
 }, { timestamps: true });
