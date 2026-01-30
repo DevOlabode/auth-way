@@ -194,3 +194,20 @@ module.exports.saveGoogleOAuth = async (req, res) => {
   req.flash('success', 'Google OAuth configured successfully');
   res.redirect(`/app/${app._id}`);
 };
+
+module.exports.getGithubOAuth = async (req, res)=>{
+  const app = await App.findOne({
+    _id: req.params.id,
+    owner: req.user._id,
+  });
+
+  if (!app) {
+    req.flash('error', 'App not found or access denied');
+    return res.redirect('/dashboard');
+  }
+
+  res.render('app/githubOAuthForm', {
+    app,
+    title: 'Configure Gitub OAuth',
+  });
+};

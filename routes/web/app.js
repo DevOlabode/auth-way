@@ -28,8 +28,10 @@ router.put('/:id', validate(appSchemas.createAppSchema), catchAsync(controller.u
 
 router.post('/:id/rotate-secret',catchAsync(controller.rotateClientSecret));
 
-router.get('/:id/google-oauth', controller.getGoogleOAuth);
+router.get('/:id/google-oauth', catchAsync(controller.getGoogleOAuth));
 
-router.post('/:id/google-oauth', controller.saveGoogleOAuth);
+router.post('/:id/google-oauth', catchAsync(controller.saveGoogleOAuth));
+
+router.get('/:id/github-oauth', catchAsync(controller.getGithubOAuth));
 
 module.exports = router;
