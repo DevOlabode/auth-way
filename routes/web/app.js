@@ -34,4 +34,6 @@ router.post('/:id/google-oauth', catchAsync(controller.saveGoogleOAuth));
 
 router.get('/:id/github-oauth', catchAsync(controller.getGithubOAuth));
 
+router.post('/:id/github-oauth', catchAsync(controller.saveGithubOAuth))
+
 module.exports = router;

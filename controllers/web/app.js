@@ -211,3 +211,45 @@ module.exports.getGithubOAuth = async (req, res)=>{
     title: 'Configure Gitub OAuth',
   });
 };
+
+module.exports.saveGithubOAuth = async (req, res) => {
+  const { id } = req.params;
+  const { clientId, clientSecret, redirectUri, enabled } = req.body;
+
+  const app = await App.findById(id);
+
+  if (!app) {
+    throw new ApiError(404, 'APP_NOT_FOUND', 'Application not found');
+  }
+
+  // Initialize config object if missing
+  if (!app.githubOAuth) {
+    app.githubOAuth = {};
+  }
+
+  /* ---------------- Validation ---------------- */
+  if (!clientId || !redirectUri) {
+    throw new ApiError(
+      400,
+      'VALIDATION_ERROR',
+      'Client ID and Redirect URI are required'
+    );
+  }
+
+  /* ---------------- Persist Config ---------------- */
+  app.githubOAuth.enabled = enabled === 'true';
+
+  app.githubOAuth.clientId = clientId.trim();
+  app.githubOAuth.redirectUri = redirectUri.trim();
+
+  // Only overwrite secret if explicitly provided
+  if (clientSecret && clientSecret.trim().length > 0) {
+    app.githubOAuth.clientSecret = clientSecret.trim();
+  }
+
+  await app.save();
+
+  /* ---------------- UX Response ---------------- */
+  req.flash('success', 'GitHub OAuth settings saved successfully');
+  res.redirect(`/app/${id}/settings`);
+};
