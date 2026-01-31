@@ -4,7 +4,7 @@ const router = express.Router();
 const { verifyClient, verifyClientIdOnly } = require('../../middleware/verifyClient');
 const catchAsync = require('../../utils/catchAsync');
 
-const controller = reqiure('../../controllers/api/github');
+const controller = require('../../controllers/api/github');
 
 router.post('/github/register', verifyClientIdOnly, catchAsync(controller.githubRegister));
 
